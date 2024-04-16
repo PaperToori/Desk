@@ -1,5 +1,5 @@
 <script setup>
-import FilterPicker from '../ui/FilterPicker.vue';
+import FilterPicker from './FilterPicker.vue';
 import { ref } from 'vue';
 
 let filter = ref("groups");

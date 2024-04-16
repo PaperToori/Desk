@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import DashboardView from './components/views/DashboardView.vue';
-import ScheduleView from './components/views/ScheduleView.vue';
-import AdminView from './components/views/AdminView.vue';
-import ScheduleEdit from './components/views/ScheduleEdit.vue';
+import AdminView from './components/displays/AdminView.vue';
+import DashboardView from './components/displays/DashboardView.vue';
+import ScheduleView from './components/displays/ScheduleView.vue';
+
 
 const routes = [
     {
@@ -10,17 +10,17 @@ const routes = [
         component: DashboardView
     },
     {
-        path: "/schedule",
-        component: ScheduleView
-    },
-    {
         path: "/admin", 
         component: AdminView
     },
     {
-        path: "/editschedule", 
-        component: ScheduleEdit
-    }
+        path: "/schedule",
+        component: ScheduleView
+    },
+    // {
+    //     path: "/editschedule", 
+    //     component: ScheduleEdit
+    // },
 ];
 
 export const router = createRouter({

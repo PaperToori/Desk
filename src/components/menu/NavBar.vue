@@ -1,9 +1,8 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 
 const router = useRouter();
-let route = useRoute();
 
 function updateRoute(e) {
     router.push(e.target.value);
@@ -12,9 +11,9 @@ function updateRoute(e) {
 </script>
 <template>
     <div class="container">
-        <select v-on:change="updateRoute" name="" id="routeSelect">
-            <option value="/admin">Admin</option>
+        <select v-on:click="updateRoute" name="" id="routeSelect">
             <option value="/">Dashboard</option>
+            <option value="/admin">Admin</option>
             <option value="/schedule">Schedule</option>
         </select>
     </div>
