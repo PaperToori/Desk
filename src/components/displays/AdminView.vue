@@ -1,25 +1,107 @@
 <script setup>
-import { watch } from 'vue';
+import { onBeforeMount, watch } from 'vue';
 import { useAdminStore } from '@/stores/store';
 import DataList from '../ui/DataList.vue';
 import ItemCreator from '../ui/ItemCreator.vue';
 
 const adminStore = useAdminStore();
 
-watch(() => adminStore.selected, () => { 
+let teachers = [];
+let students = [];
+let groups = [];
+let classrooms = [];
+let subjects = [];
+let courses = [];
 
+watch(() => adminStore.selected, () => {
+
+});
+
+onBeforeMount(async () => {
+    // fetch everything from db...
+    try {
+        let response = await fetch("http://localhost:8080/teachers/", {
+            method: "GET",
+        });
+        teachers = await response.json();
+    } catch (error) {
+        console.log(error.message);
+    }
+    try {
+        let response = await fetch("http://localhost:8080/students/", {
+            method: "GET",
+        });
+        students = await response.json();
+    } catch (error) {
+        console.log(error.message);
+    }
+    // try {
+    //     let response = await fetch("http://localhost:8080/groups/", {
+    //         method: "GET",
+    //     });
+    //     groups = await response.json();
+    // } catch (error) {
+    //     console.log(error.message);
+    // }
+    try {
+        let response = await fetch("http://localhost:8080/classrooms/", {
+            method: "GET",
+        });
+        classrooms = await response.json();
+    } catch (error) {
+        console.log(error.message);
+    }
+    try {
+        let response = await fetch("http://localhost:8080/subjects/", {
+            method: "GET",
+        });
+        subjects = await response.json();
+    } catch (error) {
+        console.log(error.message);
+    }
+    try {
+        let response = await fetch("http://localhost:8080/courses/", {
+            method: "GET",
+        });
+        courses = await response.json();
+    } catch (error) {
+        console.log(error.message);
+    }
 });
 
 </script>
 <template>
-    <div class="title"> {{ adminStore.SelectedUpperCase() }} </div>
-    <div class="datalist">
-        <DataList/> <!-- this has to wait until after ItemCreator is done -->
+    <h2>{{ adminStore.SelectedUpperCase() }}</h2>
+    <div class="datalist"> <!-- This doensn't work yet -->
+        <!-- <DataList 
+        :teachers="teachers" 
+        :students="students" 
+        :classrooms="classrooms" 
+        :subjects="subjects"
+        :courses="courses"/> -->
     </div>
     <div class="itemcreator">
-        <ItemCreator/>
+        <ItemCreator :courses="courses" />
     </div>
 </template>
 
 <style scoped>
+h2 {
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    margin-left: 2vw;
+}
+
+.datalist {
+    border: 2px;
+    padding: 2%;
+    margin: 1%;
+}
+
+.itemcreator {
+    background-color: rgb(130, 130, 130);
+    border: 2px;
+    padding: 1%;
+    margin: 1%;
+}
 </style>

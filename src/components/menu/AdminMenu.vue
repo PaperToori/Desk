@@ -5,50 +5,33 @@ import { useAdminStore } from '@/stores/store';
 const adminStore = useAdminStore();
 let selectedSchema = ref('teacher');
 
-function UpdateStore(event){
-    adminStore.selected = event.target.value;
-    console.log(adminStore.selected);
-}
-
 </script>
 <template>
-    <div @change="UpdateStore">
-            <p>
-                <label>
+    <div @change="(event) => adminStore.UpdateSelected(event.target.value)">
+            <p> <label>
                     <input type="radio" v-model="selectedSchema" value="teacher" name="selectSchema" default>
                     Lärare
-                </label>
-            </p>
-            <p>
-                <label>
+            </label> </p>
+            <p> <label>
                     <input type="radio" v-model="selectedSchema" value="student" name="selectSchema">
                     Elev
-                </label>
-            </p>
-            <p>
-                <label>
+            </label> </p>
+            <p> <label>
                     <input type="radio" v-model="selectedSchema" value="group" name="selectSchema">
                     Klass
-                </label>
-            </p>
-            <p>
-                <label>
+            </label> </p>
+            <p> <label>
                     <input type="radio" v-model="selectedSchema" value="classroom" name="selectSchema">
                     Klassrum
-                </label>
-            </p>
-            <p>
-                <label>
+            </label> </p>
+            <p> <label>
                     <input type="radio" v-model="selectedSchema" value="subject" name="selectSchema">
                     Ämne
-                </label>
-            </p>
-            <p>
-                <label>
+            </label> </p>
+            <p> <label>
                     <input type="radio" v-model="selectedSchema" value="course" name="selectSchema">
                     Kurs
-                </label>
-            </p>
+            </label> </p>
         </div>
 </template>
 <style scoped>
