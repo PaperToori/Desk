@@ -1,4 +1,7 @@
 import { defineStore } from "pinia";
+import { collection, getDocs } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { database } from "/src/firebase.js";
 
 export const useFilterStore = 
 defineStore ({
@@ -28,10 +31,10 @@ defineStore ({
     }
 });
 
-// export const useAuthStore = 
-// defineStore ({
-//     id : 'userAuth',
-//     state : () => ({
-//         auth : getAuth()
-//     })
-// });
+export const useAuthStore = 
+defineStore ({
+    id : 'userAuth',
+    state : () => ({
+        auth : getAuth()
+    })
+});
