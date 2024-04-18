@@ -1,85 +1,69 @@
 <script setup>
 import { watch } from 'vue';
-import { onBeforeMount } from 'vue';
 import { useAdminStore } from '@/stores/store';
+import DataLine from './DataLine.vue';
+
+const props = defineProps({
+    teachers: Array,
+    students: Array,
+    classrooms: Array,
+    subjects: Array,
+    courses: Array
+})
 
 let adminStore = useAdminStore();
 
-watch(() => adminStore.selected, () => { 
+watch(() => adminStore.selected, () => {
+    // Hide all options
+    document.getElementById('teacher'  ).style.display = 'none';
+    document.getElementById('student'  ).style.display = 'none';
+    // document.getElementById('group'    ).style.display = 'none';
+    document.getElementById('classroom').style.display = 'none';
+    document.getElementById('subject'  ).style.display = 'none';
+    document.getElementById('course'   ).style.display = 'none';
 
-});
-
-let teachers   = [];
-let students   = [];
-let groups     = [];
-let classrooms = [];
-let subjects   = [];
-let courses    = [];
-
-onBeforeMount(async () => {
-    // fetch everything from db...
-    // try {
-    //     let response = await fetch("http://localhost:8080/teachers/", {
-    //         method: "GET",
-    //     });
-    //     teachers = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
-    // try {
-    //     let response = await fetch("http://localhost:8080/students/", {
-    //         method: "GET",
-    //     });
-    //     students = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
-    // try {
-    //     let response = await fetch("http://localhost:8080/groups/", {
-    //         method: "GET",
-    //     });
-    //     groups = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
-    // try {
-    //     let response = await fetch("http://localhost:8080/classrooms/", {
-    //         method: "GET",
-    //     });
-    //     classrooms = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
-    // try {
-    //     let response = await fetch("http://localhost:8080/subjects/", {
-    //         method: "GET",
-    //     });
-    //     subjects = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
-    // try {
-    //     let response = await fetch("http://localhost:8080/courses/", {
-    //         method: "GET",
-    //     });
-    //     courses = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
+    // Display the selected option
+    if (adminStore.selected === 'teacher') {
+        document.getElementById('teacher').style.display = 'inline';
+    } else if (adminStore.selected === 'student') {
+        document.getElementById('student').style.display = 'inline';
+    } // else if (adminStore.selected === 'group') {
+        // document.getElementById('group').style.display = 'inline'; } 
+    else if (adminStore.selected === 'classroom') {
+        document.getElementById('classroom').style.display = 'inline';
+    } else if (adminStore.selected === 'subject') {
+        document.getElementById('subject').style.display = 'inline';
+    } else if (adminStore.selected === 'course') {
+        document.getElementById('course').style.display = 'inline';
+    }
 });
 
 </script>
 <template>
-    <div class="displayteachers" v-for="teacher in teachers">
-        <DataLine type="teacher" :target="teacher"/>
+    <div id="teachers">
+        <DataLine v-for="teacher in teachers" type="teacher" :target="teacher" />
     </div>
-    <div class="displaystudents">
+    <div id="students">
+        <DataLine v-for="student in students" type="student" :target="student" />
     </div>
-    <div class="displayclassrooms">
+    <!-- <div id="group">
+        <DataLine v-for="group in groups" type="group" :target="group"/>
+    </div> -->
+    <div id="classrooms">
+        <DataLine v-for="classroom in classrooms" type="classroom" :target="classroom" />
     </div>
-    <div class="displaysubject">
+    <div id="subject">
+        <DataLine v-for="subject in subjects" type="subject" :target="subject" />
     </div>
-    <div class="displaycourse">
+    <div id="course">
+        <DataLine v-for="course in courses" type="course" :target="course" />
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+
+#student   { display: none; }
+#group     { display: none; }
+#classroom { display: none; }
+#subject   { display: none; }
+#course    { display: none; }
+</style>

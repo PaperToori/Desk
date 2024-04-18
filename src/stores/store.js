@@ -27,6 +27,9 @@ defineStore ({
     actions : {
         SelectedUpperCase(){
             return this.selected.toUpperCase();
+        },
+        UpdateSelected(newSelected){
+            this.selected = newSelected;
         }
     }
 });
