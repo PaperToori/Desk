@@ -35,6 +35,10 @@ export const useAuthStore =
 defineStore ({
     id : 'userAuth',
     state : () => ({
-        auth : getAuth()
-    })
+        auth : null
+    }), actions : {
+        Inject (){
+            this.auth = getAuth()
+        }
+    }
 });

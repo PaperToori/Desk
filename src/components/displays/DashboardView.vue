@@ -5,19 +5,22 @@ import { useAuthStore } from '@/stores/store'
 import { database } from '/src/firebase.js'
 import { doc, setDoc } from "firebase/firestore";
 
-let auth = getAuth();
+const Auth = useAuthStore();
+Auth.Inject();
+
 let email = ref('');
 let password = ref('');
+let permissions = ref('');
 
 async function login() {
     console.log("login called");
-    await signInWithEmailAndPassword(auth, email._value, password._value)
+    await signInWithEmailAndPassword(Auth, email._value, password._value)
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
             console.log(auth.currentUser);
             console.log(
-                `logged in account ${email} ${password[0]}${password[1]}${password[2]}${new Array(password.length - 3).fill('*').join('')}`
+                `logged in account ${email} pswd: ******`
             );
         })
         .catch((error) => {
@@ -27,17 +30,15 @@ async function login() {
 }
 async function signup() {
     console.log("signup called!");
-    console.log(auth);
-    console.log(email._value, password._value);
-    await createUserWithEmailAndPassword(auth, email._value, password._value)
+    //if(permissions._value && email.match(/@+.{2,}/g))
+    await createUserWithEmailAndPassword(Auth.auth, email._value, password._value)
         .then(async (userCredential) => {
-            console.log("async shit");
             // Signed up
             const user = userCredential.user;
             console.log(database)
             await setDoc(doc(database, 'Users', user.uid), {
                 email: user.email,
-                listings: []
+                permissions: permissions._value
             });
             console.log(`Created account ${email}`);
         })
@@ -49,8 +50,6 @@ async function signup() {
             console.error(errorMessage);
             // ..
         });
-    console.log("Mr sandman");
-
 }
 
 </script>
@@ -62,6 +61,7 @@ async function signup() {
     <p>Sign up</p>
     <input type="email" placeholder="example@email.com" v-model="email">
     <input type="password" placeholder="password" v-model="password">
+    <input type="number" min="0" max="4" step="1" placeholder="permission level" v-model="permissions">
     <button @click="signup">sign up</button>
 </template>
 <style scoped>
