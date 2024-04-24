@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useAuthStore } from '@/stores/store'
 import { database } from '/src/firebase.js'
 import { doc, setDoc } from "firebase/firestore";
@@ -11,21 +11,42 @@ Auth.Inject();
 let email = ref('');
 let password = ref('');
 let permissions = ref('');
+let response = ref(0);
+
+async function signout() {
+    console.log("attempting to signout");
+    signOut(Auth.auth)
+        .then(() => {
+            // Sign-out successful.
+            console.log('logged out');
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.log("an error occured");
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(errorCode);
+            console.error(errorMessage);
+        });
+}
 
 async function login() {
     console.log("login called");
-    await signInWithEmailAndPassword(Auth, email._value, password._value)
+    await signInWithEmailAndPassword(Auth.auth, email._value, password._value)
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            console.log(auth.currentUser);
+            console.log(Auth.auth.currentUser);
             console.log(
                 `logged in account ${email} pswd: ******`
             );
         })
         .catch((error) => {
+            console.log("an error occured");
             const errorCode = error.code;
             const errorMessage = error.message;
+            console.error(errorCode);
+            console.error(errorMessage);
         });
 }
 async function signup() {
@@ -51,7 +72,31 @@ async function signup() {
             // ..
         });
 }
-
+async function authCheck() {
+    console.log("red button pushed");
+    let id = "undefined";
+    if (Auth.auth.currentUser) {
+        id = await Auth.auth.currentUser.getIdToken(true);
+        console.log(id);
+    }
+    let headersList = {
+        "id": id
+    }
+    response.value = await fetch("http://localhost:8080/test/", {
+        method: "GET",
+        headers: headersList
+    }).catch((error) => {
+        console.log("an error occured");
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode);
+        console.error(errorMessage);
+        // ..
+    });
+    console.log("----");
+    response.value = await response.value.json();
+    console.log("response from endpoint", response.value);
+}
 </script>
 <template>
     <p>Sign in</p>
@@ -63,10 +108,33 @@ async function signup() {
     <input type="password" placeholder="password" v-model="password">
     <input type="number" min="0" max="4" step="1" placeholder="permission level" v-model="permissions">
     <button @click="signup">sign up</button>
+    <button id="authCheck" @click="authCheck">Check Authentication</button>
+    <p>{{ response }}</p>
+    <button @click="signout">signOut</button>
 </template>
 <style scoped>
 button {
     width: 10vh;
     height: 2vh;
+}
+
+#authCheck {
+    background-color: red;
+    border-radius: 50%;
+    width: 8vh;
+    height: 8vh;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    font-size: x-small;
+    font-weight: bold;
+    border-style: ridge;
+}
+
+#authCheck:hover {
+    background-color: rgb(225, 0, 0);
+}
+
+#authCheck:active {
+    border-style: inset;
 }
 </style>
