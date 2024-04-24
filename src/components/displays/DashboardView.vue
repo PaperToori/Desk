@@ -10,7 +10,7 @@ Auth.Inject();
 
 let email = ref('');
 let password = ref('');
-let permissions = ref('');
+let permissions = ref(0);
 let response = ref(0);
 
 async function signout() {
@@ -56,12 +56,14 @@ async function signup() {
         .then(async (userCredential) => {
             // Signed up
             const user = userCredential.user;
-            console.log(database)
-            await setDoc(doc(database, 'Users', user.uid), {
-                email: user.email,
-                permissions: permissions._value
+            let documentStatus = await fetch("http://localhost:8080/auth/user/", {
+                method: "POST",
+                body: JSON.stringify({
+                    id: user.uid,
+                    permission: permissions._value
+                })
             });
-            console.log(`Created account ${email}`);
+            console.log(`Created account ${email._value}`);
         })
         .catch((error) => {
             console.log("an error occured");
