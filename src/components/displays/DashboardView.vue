@@ -84,7 +84,7 @@ async function authCheck() {
     let headersList = {
         "id": id
     }
-    response.value = await fetch("http://localhost:8080/test/", {
+    response.value = await fetch("http://localhost:8080/auth/test/", {
         method: "GET",
         headers: headersList
     }).catch((error) => {
@@ -96,6 +96,7 @@ async function authCheck() {
         // ..
     });
     console.log("----");
+    console.log(response);
     response.value = await response.value.json();
     console.log("response from endpoint", response.value);
 }
