@@ -2,10 +2,12 @@
 import { watch, ref } from 'vue';
 import { useAdminStore } from '@/stores/store';
 
-const props = defineProps({ courses: Array });
+const props = defineProps({ tags: Array, students: Array });
 
 let adminStore = useAdminStore();
 let responseMessage = ref('No Status');
+let tagCount = ref(0);
+let studentCount = ref(0);
 
 watch(() => adminStore.selected, () => {
     // Reset text boxes and status display
@@ -15,37 +17,38 @@ watch(() => adminStore.selected, () => {
     document.getElementById('student-name').value = '';
     document.getElementById('student-gmail').value = '';
     document.getElementById('student-phonenumber').value = '';
-    document.getElementById('student-course').value = '';
     document.getElementById('classroom-name').value = '';
     document.getElementById('subject-name').value = '';
-    document.getElementById('course-name').value = '';
+    document.getElementById('tag-name').value = '';
     document.getElementById('status-message').style.backgroundColor = 'rgb(180, 180, 180)';
     responseMessage.value = 'No Status';
+    tagCount.value = 0;
+    studentCount.value = 0;
     // Hide all options
-    document.getElementById('teacher').style.display = 'none';
-    document.getElementById('student').style.display = 'none';
-    document.getElementById('group').style.display = 'none';
-    document.getElementById('classroom').style.display = 'none';
-    document.getElementById('subject').style.display = 'none';
-    document.getElementById('course').style.display = 'none';
+    document.getElementById('input-teacher').style.display = 'none';
+    document.getElementById('input-student').style.display = 'none';
+    document.getElementById('input-group').style.display = 'none';
+    document.getElementById('input-classroom').style.display = 'none';
+    document.getElementById('input-subject').style.display = 'none';
+    document.getElementById('input-tag').style.display = 'none';
 
     // Display the selected option
     if (adminStore.selected === 'teacher') {
-        document.getElementById('teacher').style.display = 'inline';
+        document.getElementById('input-teacher').style.display = 'inline';
     } else if (adminStore.selected === 'student') {
-        document.getElementById('student').style.display = 'inline';
+        document.getElementById('input-student').style.display = 'grid';
     } else if (adminStore.selected === 'group') {
-        document.getElementById('group').style.display = 'inline';
+        document.getElementById('input-group').style.display = 'grid';
     } else if (adminStore.selected === 'classroom') {
-        document.getElementById('classroom').style.display = 'inline';
+        document.getElementById('input-classroom').style.display = 'inline';
     } else if (adminStore.selected === 'subject') {
-        document.getElementById('subject').style.display = 'inline';
-    } else if (adminStore.selected === 'course') {
-        document.getElementById('course').style.display = 'inline'; 
+        document.getElementById('input-subject').style.display = 'inline';
+    } else if (adminStore.selected === 'tag') {
+        document.getElementById('input-tag').style.display = 'inline'; 
     }
 });
 
-async function PutRequest() {
+async function PutRequest() { // Student functionality is currently fucked
 
     let response;
 
@@ -75,7 +78,7 @@ async function PutRequest() {
         let studentName = document.getElementById('student-name').value;
         let studentGmail = document.getElementById('student-gmail').value;
         let studentPhoneNumber = document.getElementById('student-phonenumber').value;
-        let studentCourse = document.getElementById('student-course').value;
+        let studentTags = [...getAllStudentTags()];
 
         // Attempt POST request
         try {
@@ -85,7 +88,7 @@ async function PutRequest() {
                     name: studentName,
                     gmail: studentGmail,
                     phoneNumber: studentPhoneNumber,
-                    course: studentCourse
+                    tags: studentTags
                 }) });
         } catch (error) {
             console.log(error.message);
@@ -94,18 +97,21 @@ async function PutRequest() {
     // /// Create New Group... this is gonna be a massive pain
     else if (adminStore.selected === 'group') {
         // Init values for ease of use
-        // let st = document.getElementById('').value;
-        // let st = document.getElementById('').value;
+        let groupName = document.getElementById('group-name').value;
+        let groupMembers = getAllGroupMembers();
 
-    //// Attempt POST request
-        // try {
-        //     response = await fetch("http://localhost:8080/groups/", {
-        //         method: "POST",
-        //         body : JSON.stringify({  })
-        //     });
-        // } catch (error) {
-        //     console.log(error.message);
-        // }
+    // Attempt POST request
+        try {
+            response = await fetch("http://localhost:8080/groups/", {
+                method: "POST",
+                body : JSON.stringify({ 
+                    name : groupName,
+                    members : groupMembers 
+                })
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
     }
     // /// Create new Classroom 
     else if (adminStore.selected === 'classroom') {
@@ -137,16 +143,16 @@ async function PutRequest() {
             console.log(error.message);
         }
     }
-    // /// Create new Course
-    else if (adminStore.selected === 'course') {
+    // /// Create new Tag
+    else if (adminStore.selected === 'tag') {
         // Init values for ease of use
-        let courseName = document.getElementById('course-name').value;
+        let tagName = document.getElementById('tag-name').value;
 
         // Attempt POST request
         try {
-            response = await fetch("http://localhost:8080/courses/", {
+            response = await fetch("http://localhost:8080/tags/", {
                 method: "POST",
-                body: JSON.stringify({ name: courseName })
+                body: JSON.stringify({ name: tagName })
             });
         } catch (error) {
             console.log(error.message);
@@ -158,32 +164,70 @@ async function PutRequest() {
     } else { document.getElementById('status-message').style.backgroundColor = "rgb(210, 110, 110)"; }
 }
 
+function DecrimentTagCount ()     { if (tagCount.value > 0)     { tagCount.value--;     } }
+function DecrimentStudentCount () { if (studentCount.value > 0) { studentCount.value--; } }
+
+function getAllStudentTags() {
+    let selectedTags = [];
+    let tagSelectors = document.querySelectorAll(".student-list-tags");
+    Array.from(tagSelectors).forEach((tagSelector) => {
+        selectedTags.push(tagSelector.value);
+    });
+    return selectedTags;
+}
+
+function getAllGroupMembers() {
+    let selectedStudents = [];
+    let memberSelectors = document.querySelectorAll(".group-list-students");
+    Array.from(memberSelectors).forEach((memberSelector) => {
+        selectedStudents.push(memberSelector.value);
+    });
+    return selectedStudents;
+}
+
 </script>
 
 <template>
-    <div id="teacher">
+    <div id="input-teacher">
         <input id="teacher-name" type="text" placeholder="Full Name">
         <input id="teacher-gmail" type="text" placeholder="Gmail">
         <input id="teacher-phonenumber" type="tel" inputmode="numeric" placeholder="Phone Number">
     </div>
-    <div id="student">
-        <input id="student-name" type="text" placeholder="Full Name">
-        <input id="student-gmail" type="text" placeholder="Gmail">
-        <input id="student-phonenumber" type="tel" placeholder="Phone Number">
-        <select id="student-course">
-            <option value="" default disabled hidden>Select Course</option>
-            <option v-for="course in props.courses" :value="course.name">{{ course.name }}</option>
-        </select>
+    <div id="input-student">
+        <div>
+            <input id="student-name" type="text" placeholder="Full Name">
+            <input id="student-gmail" type="text" placeholder="Gmail">
+            <input id="student-phonenumber" type="tel" placeholder="Phone Number">
+            <button @click="tagCount++">Add Tag</button>
+            <button @click="DecrimentTagCount">Remove Tag</button>
+        </div>
+        <div class="bunch-of-stuff">
+            <select v-for="n in tagCount" class="student-list-tags">
+                <option v-for="tag in props.tags" :value="tag.name">{{ tag.name }}</option>
+            </select>
+        </div>
     </div>
+    
+    <div id="input-group">
+        <div>
+            <input id="group-name" type="text" placeholder="Group Name">
+            <button @click="studentCount++">Add Student</button>
+            <button @click="DecrimentStudentCount">Remove Student</button>
+        </div>
+        <div class="bunch-of-stuff">
+            <select v-for="n in studentCount" class="group-list-students">
+                <option v-for="student in props.students" :value="student.name">{{ student.name }}</option>
+            </select>
+        </div>
+    </div>
+    <div id="input-classroom"><input id="classroom-name" type="text" placeholder="Location's Name"></div>
+    <div id="input-subject"> <input id="subject-name" type="text" placeholder="Subject's Name"> </div>
+    <div id="input-tag"> <input id="tag-name" type="text" placeholder="Tag's Name"> </div>
 
-    <div id="group">Missing</div> <!-- This is gonna be a massive pain is the ass, isn't it? -->
-
-    <div id="classroom"><input id="classroom-name" type="text" placeholder="Location's Name"></div>
-    <div id="subject"> <input id="subject-name" type="text" placeholder="Subject's Name"> </div>
-    <div id="course"> <input id="course-name" type="text" placeholder="Course's Name"> </div>
-
-    <button id="btn" @click="PutRequest">Create</button>
-    <span id="status-message">{{ responseMessage }}</span>
+    <p>
+        <button id="btn" @click="PutRequest">Create</button>
+        <span id="status-message">{{ responseMessage }}</span>
+    </p>
 </template>
 
 <style scoped>
@@ -209,6 +253,11 @@ button {
     padding: 3px;
 }
 
+.bunch-of-stuff {
+    height: 30vh;
+    overflow-y: auto;
+}
+
 #status-message { 
     display: inline-block;
     text-align: center;
@@ -218,9 +267,12 @@ button {
     border-radius: 20px;
     background-color: rgb(180, 180, 180);
 }
-#student   { display: none; }
-#group     { display: none; }
-#classroom { display: none; }
-#subject   { display: none; }
-#course    { display: none; }
+#input-student   { 
+    display: none;
+    grid-auto-flow: column;
+}
+#input-group     { display: none; grid-auto-flow: column; }
+#input-classroom { display: none; }
+#input-subject   { display: none; }
+#input-tag       { display: none; }
 </style>

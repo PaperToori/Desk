@@ -29,8 +29,8 @@ let selectedSchema = ref('teacher');
                     Ämne
             </label> </p>
             <p> <label>
-                    <input type="radio" v-model="selectedSchema" value="course" name="selectSchema">
-                    Kurs
+                    <input type="radio" v-model="selectedSchema" value="tag" name="selectSchema">
+                    Etikett
             </label> </p>
         </div>
 </template>

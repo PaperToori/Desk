@@ -4,66 +4,90 @@ import { useAdminStore } from '@/stores/store';
 import DataLine from './DataLine.vue';
 
 const props = defineProps({
-    teachers: Array,
-    students: Array,
+    teachers  : Array,
+    students  : Array,
+    groups    : Array,
     classrooms: Array,
-    subjects: Array,
-    courses: Array
+    subjects  : Array,
+    tags      : Array
 })
 
 let adminStore = useAdminStore();
 
 watch(() => adminStore.selected, () => {
     // Hide all options
-    document.getElementById('teacher'  ).style.display = 'none';
-    document.getElementById('student'  ).style.display = 'none';
-    // document.getElementById('group'    ).style.display = 'none';
-    document.getElementById('classroom').style.display = 'none';
-    document.getElementById('subject'  ).style.display = 'none';
-    document.getElementById('course'   ).style.display = 'none';
+    document.getElementById('list-teachers').style.display = 'none';
+    document.getElementById('list-students').style.display = 'none';
+    document.getElementById('list-groups').style.display = 'none';
+    document.getElementById('list-classrooms').style.display = 'none';
+    document.getElementById('list-subjects').style.display = 'none';
+    document.getElementById('list-tags').style.display = 'none';
 
     // Display the selected option
     if (adminStore.selected === 'teacher') {
-        document.getElementById('teacher').style.display = 'inline';
+        document.getElementById('list-teachers').style.display = 'grid';
     } else if (adminStore.selected === 'student') {
-        document.getElementById('student').style.display = 'inline';
-    } // else if (adminStore.selected === 'group') {
-        // document.getElementById('group').style.display = 'inline'; } 
-    else if (adminStore.selected === 'classroom') {
-        document.getElementById('classroom').style.display = 'inline';
+        document.getElementById('list-students').style.display = 'grid';
+    } else if (adminStore.selected === 'group') 
+    {   document.getElementById('list-groups').style.display = 'grid'; 
+    } else if (adminStore.selected === 'classroom') {
+        document.getElementById('list-classrooms').style.display = 'grid';
     } else if (adminStore.selected === 'subject') {
-        document.getElementById('subject').style.display = 'inline';
-    } else if (adminStore.selected === 'course') {
-        document.getElementById('course').style.display = 'inline';
+        document.getElementById('list-subjects').style.display = 'grid';
+    } else if (adminStore.selected === 'tag') {
+        document.getElementById('list-tags').style.display = 'grid';
     }
 });
 
 </script>
 <template>
-    <div id="teachers">
-        <DataLine v-for="teacher in teachers" type="teacher" :target="teacher" />
+
+    <div id="list-teachers" class="rowler">
+        <div v-for="teacher in teachers">
+            <DataLine type="teacher" :target="teacher" />
+        </div>
     </div>
-    <div id="students">
-        <DataLine v-for="student in students" type="student" :target="student" />
+
+    <div id="list-students" class="rowler">
+        <div v-for="student in students">
+            <DataLine type="student" :target="student" />
+        </div>
     </div>
-    <!-- <div id="group">
-        <DataLine v-for="group in groups" type="group" :target="group"/>
-    </div> -->
-    <div id="classrooms">
-        <DataLine v-for="classroom in classrooms" type="classroom" :target="classroom" />
+
+    <div id="list-groups" class="rowler">
+        <div v-for="group in groups">
+            <DataLine type="group" :target="group"/>
+        </div>
     </div>
-    <div id="subject">
-        <DataLine v-for="subject in subjects" type="subject" :target="subject" />
+
+    <div id="list-classrooms" class="rowler">
+        <div v-for="classroom in classrooms">
+            <DataLine type="classroom" :target="classroom" />
+        </div>
     </div>
-    <div id="course">
-        <DataLine v-for="course in courses" type="course" :target="course" />
+
+    <div id="list-subjects" class="rowler">
+        <div v-for="subject in subjects">
+            <DataLine type="subject" :target="subject" />
+        </div>
     </div>
+
+    <div id="list-tags" class="rowler">
+        <div v-for="tag in tags">
+            <DataLine type="tag" :target="tag" />
+        </div>
+    </div>
+
 </template>
 <style scoped>
-
-#student   { display: none; }
-#group     { display: none; }
-#classroom { display: none; }
-#subject   { display: none; }
-#course    { display: none; }
+.rowler { 
+    max-height: 100%;
+    overflow-y: auto;
+ }
+#list-teachers   { display: grid; }
+#list-students   { display: none; }
+#list-groups     { display: none; }
+#list-classrooms { display: none; }
+#list-subjects   { display: none; }
+#list-tags       { display: none; }
 </style>

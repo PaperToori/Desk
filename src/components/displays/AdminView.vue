@@ -11,7 +11,7 @@ let students = [];
 let groups = [];
 let classrooms = [];
 let subjects = [];
-let courses = [];
+let tags = [];
 
 watch(() => adminStore.selected, () => {
 
@@ -35,14 +35,14 @@ onBeforeMount(async () => {
     } catch (error) {
         console.log(error.message);
     }
-    // try {
-    //     let response = await fetch("http://localhost:8080/groups/", {
-    //         method: "GET",
-    //     });
-    //     groups = await response.json();
-    // } catch (error) {
-    //     console.log(error.message);
-    // }
+    try {
+        let response = await fetch("http://localhost:8080/groups/", {
+            method: "GET",
+        });
+        groups = await response.json();
+    } catch (error) {
+        console.log(error.message);
+    }
     try {
         let response = await fetch("http://localhost:8080/classrooms/", {
             method: "GET",
@@ -60,10 +60,10 @@ onBeforeMount(async () => {
         console.log(error.message);
     }
     try {
-        let response = await fetch("http://localhost:8080/courses/", {
+        let response = await fetch("http://localhost:8080/tags/", {
             method: "GET",
         });
-        courses = await response.json();
+        tags = await response.json();
     } catch (error) {
         console.log(error.message);
     }
@@ -72,16 +72,18 @@ onBeforeMount(async () => {
 </script>
 <template>
     <h2>{{ adminStore.SelectedUpperCase() }}</h2>
-    <div class="datalist"> <!-- This doensn't work yet -->
-        <!-- <DataList 
-        :teachers="teachers" 
-        :students="students" 
+    <div class="datalist">
+        <DataList 
+        :teachers  ="teachers" 
+        :students  ="students" 
+        :groups    ="groups"
         :classrooms="classrooms" 
-        :subjects="subjects"
-        :courses="courses"/> -->
+        :subjects  ="subjects"
+        :tags      ="tags">
+        </DataList>
     </div>
     <div class="itemcreator">
-        <ItemCreator :courses="courses" />
+        <ItemCreator :tags="tags" :students="students"/>
     </div>
 </template>
 
@@ -93,12 +95,15 @@ h2 {
 }
 
 .datalist {
+    height: 50vh;
+    background-color: rgb(130, 130, 130);
     border: 2px;
     padding: 2%;
     margin: 1%;
 }
 
 .itemcreator {
+    height: 40vh;
     background-color: rgb(130, 130, 130);
     border: 2px;
     padding: 1%;
