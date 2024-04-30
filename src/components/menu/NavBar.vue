@@ -15,6 +15,7 @@ function updateRoute(e) {
             <option value="/">Dashboard</option>
             <option value="/admin">Admin</option>
             <option value="/schedule">Schedule</option>
+            <option value="/profile">Profile</option>
         </select>
     </div>
 </template>
