@@ -1,45 +1,69 @@
 <script setup>
 import { ref } from 'vue';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useAuthStore } from '@/stores/store'
 import { database } from '/src/firebase.js'
 import { doc, setDoc } from "firebase/firestore";
 
-let auth = getAuth();
+const Auth = useAuthStore();
+Auth.Inject();
+
 let email = ref('');
 let password = ref('');
+let permissions = ref(0);
+let response = ref(0);
+
+async function signout() {
+    console.log("attempting to signout");
+    signOut(Auth.auth)
+        .then(() => {
+            // Sign-out successful.
+            console.log('logged out');
+            window.location.reload();
+        })
+        .catch((error) => {
+            console.log("an error occured");
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(errorCode);
+            console.error(errorMessage);
+        });
+}
 
 async function login() {
     console.log("login called");
-    await signInWithEmailAndPassword(auth, email._value, password._value)
+    await signInWithEmailAndPassword(Auth.auth, email._value, password._value)
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            console.log(auth.currentUser);
+            console.log(Auth.auth.currentUser);
             console.log(
-                `logged in account ${email} ${password[0]}${password[1]}${password[2]}${new Array(password.length - 3).fill('*').join('')}`
+                `logged in account ${email} pswd: ******`
             );
         })
         .catch((error) => {
+            console.log("an error occured");
             const errorCode = error.code;
             const errorMessage = error.message;
+            console.error(errorCode);
+            console.error(errorMessage);
         });
 }
 async function signup() {
     console.log("signup called!");
-    console.log(auth);
-    console.log(email._value, password._value);
-    await createUserWithEmailAndPassword(auth, email._value, password._value)
+    //if(permissions._value && email.match(/@+.{2,}/g))
+    await createUserWithEmailAndPassword(Auth.auth, email._value, password._value)
         .then(async (userCredential) => {
-            console.log("async shit");
             // Signed up
             const user = userCredential.user;
-            console.log(database)
-            await setDoc(doc(database, 'Users', user.uid), {
-                email: user.email,
-                listings: []
+            let documentStatus = await fetch("http://localhost:8080/auth/user/", {
+                method: "POST",
+                body: JSON.stringify({
+                    id: user.uid,
+                    permission: permissions._value
+                })
             });
-            console.log(`Created account ${email}`);
+            console.log(`Created account ${email._value}`);
         })
         .catch((error) => {
             console.log("an error occured");
@@ -49,10 +73,33 @@ async function signup() {
             console.error(errorMessage);
             // ..
         });
-    console.log("Mr sandman");
-
 }
-
+async function authCheck() {
+    console.log("red button pushed");
+    let id = "undefined";
+    if (Auth.auth.currentUser) {
+        id = await Auth.auth.currentUser.getIdToken(true);
+        console.log(id);
+    }
+    let headersList = {
+        "id": id
+    }
+    response.value = await fetch("http://localhost:8080/auth/test/", {
+        method: "GET",
+        headers: headersList
+    }).catch((error) => {
+        console.log("an error occured");
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode);
+        console.error(errorMessage);
+        // ..
+    });
+    console.log("----");
+    console.log(response);
+    response.value = await response.value.json();
+    console.log("response from endpoint", response.value);
+}
 </script>
 <template>
     <p>Sign in</p>
@@ -62,11 +109,35 @@ async function signup() {
     <p>Sign up</p>
     <input type="email" placeholder="example@email.com" v-model="email">
     <input type="password" placeholder="password" v-model="password">
+    <input type="number" min="0" max="4" step="1" placeholder="permission level" v-model="permissions">
     <button @click="signup">sign up</button>
+    <button id="authCheck" @click="authCheck">Check Authentication</button>
+    <p>{{ response }}</p>
+    <button @click="signout">signOut</button>
 </template>
 <style scoped>
 button {
     width: 10vh;
     height: 2vh;
+}
+
+#authCheck {
+    background-color: red;
+    border-radius: 50%;
+    width: 8vh;
+    height: 8vh;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    font-size: x-small;
+    font-weight: bold;
+    border-style: ridge;
+}
+
+#authCheck:hover {
+    background-color: rgb(225, 0, 0);
+}
+
+#authCheck:active {
+    border-style: inset;
 }
 </style>

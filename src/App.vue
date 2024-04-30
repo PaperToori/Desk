@@ -1,6 +1,7 @@
 <script setup>
 import NavBar from './components/menu/NavBar.vue';
 import MenuOperator from './components/menu/MenuOperator.vue';
+import Signout from './components/ui/Signout.vue'
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import MenuOperator from './components/menu/MenuOperator.vue';
           <NavBar/>
           <div>
             <MenuOperator/>
+            <Signout />
           </div>
       </div>
       <div>
