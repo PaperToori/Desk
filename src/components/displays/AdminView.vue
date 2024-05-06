@@ -69,10 +69,6 @@ onBeforeMount(async () => {
     }
 });
 
-function refreshArray(target) {
-    console.log(target);
-}
-
 </script>
 <template>
     <h2>{{ adminStore.SelectedUpperCase() }}</h2>
