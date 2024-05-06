@@ -32,6 +32,12 @@ defineStore ({
         },
         UpdateSelected(newSelected){
             this.selected = newSelected;
+        },
+        DisplayEdit(){ 
+            this.edit = true;  
+        },
+        HideEdit   (){ 
+            this.edit = false; 
         }
     }
 });
