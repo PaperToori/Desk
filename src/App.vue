@@ -32,6 +32,7 @@ import Signout from './components/ui/Signout.vue'
   grid-template-rows: 1fr 6fr;
   background-color: rgb(180, 180, 180);
   width: 15vw;
+  height: 100vh;
 }
 
 .schedule {

@@ -69,11 +69,15 @@ onBeforeMount(async () => {
     }
 });
 
+function refreshArray(target) {
+    console.log(target);
+}
+
 </script>
 <template>
     <h2>{{ adminStore.SelectedUpperCase() }}</h2>
     <div class="datalist">
-        <DataList 
+        <DataList
         :teachers  ="teachers" 
         :students  ="students" 
         :groups    ="groups"
