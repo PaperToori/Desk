@@ -1,4 +1,7 @@
 <script setup>
+import { useAdminStore } from '@/stores/store';
+
+let adminStore = useAdminStore();
 
 let props = defineProps({
     type: String,
@@ -81,6 +84,11 @@ async function DeleteTag() {
     } catch (error) {
         console.log(error.message);
     }
+}
+
+function EditObject() {
+    adminStore.edit = true;
+    adminStore.editTarget = props.target;
 }
 
 </script>

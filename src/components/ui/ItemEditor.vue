@@ -8,19 +8,19 @@ watch(() => adminStore.edit, () => { });
 
 let socialSecurityNumber = ref(adminStore.editTarget.socialSecurityNumber);
 let name                 = ref(adminStore.editTarget.name);
-let tags                 = ref(adminStore.editTarget.tags);         // ARRAY
 let email                = ref(adminStore.editTarget.email);
 let phoneNumber          = ref(adminStore.editTarget.phoneNumber);
 let group                = ref(adminStore.editTarget.group);
 let adress               = ref(adminStore.editTarget.adress);
 let zip                  = ref(adminStore.editTarget.zip);
 let city                 = ref(adminStore.editTarget.city);
+let tags                 = ref(adminStore.editTarget.tags);         // ARRAY
 let guardian             = ref(adminStore.editTarget.guardian);     // ARRAY
 let child                = ref(adminStore.editTarget.child);        // ARRAY
 let members              = ref(adminStore.editTarget.members);      // ARRAY
 
 
-function PatchRequest() {
+async function PatchRequest() {
     if (adminStore.edit === 'teacher') { }
     else if (adminStore.edit === 'student') { }
     else if (adminStore.edit === 'group') { }
