@@ -35,11 +35,11 @@ import Signout from './components/ui/Signout.vue'
   height: 100vh;
 }
 
-.schedule {
+/* .schedule {
   display: grid;
   grid-template-rows: repeat(144, 10px);
   grid-template-columns: repeat(5, 1fr);
   width: 85vw;
   background-color: rgb(80, 80, 80);
-}
+} */
 </style>
