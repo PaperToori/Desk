@@ -26,7 +26,6 @@ onBeforeMount(async () => {
             method: "GET",
         });
         teachers = await response.json();
-        console.log(teachers);
     } catch (error) {
         console.log(error.message);
     }
@@ -35,7 +34,6 @@ onBeforeMount(async () => {
             method: "GET",
         });
         students = await response.json();
-        console.log(students);
     } catch (error) {
         console.log(error.message);
     }
@@ -44,7 +42,6 @@ onBeforeMount(async () => {
             method: "GET",
         });
         groups = await response.json();
-        console.log(groups);
     } catch (error) {
         console.log(error.message);
     }
@@ -53,7 +50,6 @@ onBeforeMount(async () => {
             method: "GET",
         });
         classrooms = await response.json();
-        console.log(classrooms);
     } catch (error) {
         console.log(error.message);
     }
@@ -62,7 +58,6 @@ onBeforeMount(async () => {
             method: "GET",
         });
         subjects = await response.json();
-        console.log(subjects);
     } catch (error) {
         console.log(error.message);
     }
@@ -71,7 +66,6 @@ onBeforeMount(async () => {
             method: "GET",
         });
         tags = await response.json();
-        console.log(tags);
     } catch (error) {
         console.log(error.message);
     }
@@ -87,12 +81,11 @@ onBeforeMount(async () => {
         :groups    ="groups"
         :classrooms="classrooms" 
         :subjects  ="subjects"
-        :tags      ="tags">
-        </DataList>
+        :tags      ="tags"/>
     </div>
     <ItemEditor/>
     <div class="itemcreator">
-        <ItemCreator :tags="tags" :students="students"/>
+        <ItemCreator :tags="tags" :students="students" :groups="groups"/>
     </div>
 </template>
 
@@ -116,7 +109,7 @@ h2 {
 }
 
 .itemcreator {
-    height: 40vh;
+    height: auto;
     background-color: rgb(130, 130, 130);
     border: 2px;
     padding-top: 1vh;
