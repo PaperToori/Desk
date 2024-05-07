@@ -99,7 +99,7 @@ function EditObject() { // This doesn't work yet
 <template>
     <div class="items" v-if="props.type === 'teacher'" id="item-teacher">
         <span> {{ props.target.name }} </span>
-        <span> {{ props.target.gmail }} </span>
+        <span> {{ props.target.email }} </span>
         <span> {{ props.target.phoneNumber }} </span>
         <div class="button-container">
             <button @click="EditObject" class="inline-button">Edit</button>
@@ -108,7 +108,7 @@ function EditObject() { // This doesn't work yet
     </div>
     <div class="items" v-else-if="props.type === 'student'" id="item-student">
         <span> {{ props.target.name }} </span>
-        <span> {{ props.target.gmail }} </span>
+        <span> {{ props.target.email }} </span>
         <span> {{ props.target.phoneNumber }} </span>
         <div class="button-container">
             <button @click="EditObject" class="inline-button">Edit</button>
