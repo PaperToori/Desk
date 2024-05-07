@@ -1,9 +1,11 @@
 <script setup>
 import { watch, ref } from 'vue';
-import { useAdminStore } from '@/stores/store';
+import { useAdminStore, useAuthStore } from '@/stores/store';
 
 const props = defineProps({ tags: Array, students: Array });
 
+const Auth = useAuthStore();
+Auth.Inject();
 let adminStore = useAdminStore();
 let responseMessage = ref('No Status');
 let tagCount = ref(0);
@@ -18,7 +20,6 @@ let studentZip = ref();
 let studentCity = ref();
 let studentGuardian = ref();
 let tempPassword = ref();
-
 watch(() => adminStore.selected, () => {
     // Reset text boxes and status display
     document.getElementById('teacher-name').value = '';
@@ -84,11 +85,18 @@ async function PutRequest() { // Student functionality is currently fucked
     else if (adminStore.selected === 'student') {
         // Init values for ease of use
         let studentTags = [...getAllStudentTags()];
-
+        let id = "undefined";
+        if (Auth.auth.currentUser) {
+            id = await Auth.auth.currentUser.getIdToken(true);
+        }
+        let headersList = {
+            "id": id
+        }
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/students/", {
                 method: "POST",
+                headers: headersList,
                 body: JSON.stringify({
                     name: studentName.value,
                     email: studentEmail.value,
