@@ -112,5 +112,5 @@ async function PatchRequest() {
     margin-right: 1vw;
     max-width: 85vw;
 }
-.box-edit{}
+/* .box-edit{} */
 </style>
