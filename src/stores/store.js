@@ -22,7 +22,9 @@ export const useAdminStore =
 defineStore ({
     id : 'AdminStore',
     state : () => ({
-        selected : 'teacher'
+        selected : 'teacher',
+        edit : false,
+        editTarget: null
     }),
     actions : {
         SelectedUpperCase(){
@@ -30,6 +32,12 @@ defineStore ({
         },
         UpdateSelected(newSelected){
             this.selected = newSelected;
+        },
+        DisplayEdit(){ 
+            this.edit = true;  
+        },
+        HideEdit   (){ 
+            this.edit = false; 
         }
     }
 });

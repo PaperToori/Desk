@@ -73,7 +73,7 @@ onBeforeMount(async () => {
 <template>
     <h2>{{ adminStore.SelectedUpperCase() }}</h2>
     <div class="datalist">
-        <DataList 
+        <DataList
         :teachers  ="teachers" 
         :students  ="students" 
         :groups    ="groups"
@@ -99,14 +99,20 @@ h2 {
     background-color: rgb(130, 130, 130);
     border: 2px;
     padding: 2%;
-    margin: 1%;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
 }
 
 .itemcreator {
     height: 40vh;
     background-color: rgb(130, 130, 130);
     border: 2px;
-    padding: 1%;
-    margin: 1%;
+    padding-top: 1vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
 }
 </style>
