@@ -3,6 +3,7 @@ import { onBeforeMount, watch } from 'vue';
 import { useAdminStore } from '@/stores/store';
 import DataList from '../ui/DataList.vue';
 import ItemCreator from '../ui/ItemCreator.vue';
+import ItemEditor from '../ui/ItemEditor.vue';
 
 const adminStore = useAdminStore();
 
@@ -71,7 +72,7 @@ onBeforeMount(async () => {
 
 </script>
 <template>
-    <h2>{{ adminStore.SelectedUpperCase() }}</h2>
+    <!-- <h2>{{ adminStore.SelectedUpperCase() }}</h2> -->
     <div class="datalist">
         <DataList
         :teachers  ="teachers" 
@@ -82,6 +83,7 @@ onBeforeMount(async () => {
         :tags      ="tags">
         </DataList>
     </div>
+    <ItemEditor/>
     <div class="itemcreator">
         <ItemCreator :tags="tags" :students="students"/>
     </div>
@@ -103,6 +105,7 @@ h2 {
     margin-bottom: 1vh;
     margin-left: 1vw;
     margin-right: 1vw;
+    max-width: 85vw;
 }
 
 .itemcreator {
@@ -114,5 +117,6 @@ h2 {
     margin-bottom: 1vh;
     margin-left: 1vw;
     margin-right: 1vw;
+    max-width: 85vw;
 }
 </style>

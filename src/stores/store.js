@@ -24,7 +24,8 @@ defineStore ({
     state : () => ({
         selected : 'teacher',
         edit : false,
-        editTarget: null
+        editTarget: { value : false },
+        targetType: ''
     }),
     actions : {
         SelectedUpperCase(){

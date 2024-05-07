@@ -39,7 +39,7 @@ async function DeleteGroup() {
         let url = "http://localhost:8080/groups/";
         let response = await fetch(url, {
             method: "DELETE",
-            body: JSON.stringify({ name : props.target.name })
+            body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.text());
     } catch (error) {
@@ -52,7 +52,7 @@ async function DeleteClassroom() {
         let url = "http://localhost:8080/classrooms/";
         let response = await fetch(url, {
             method: "DELETE",
-            body: JSON.stringify({ name : props.target.name })
+            body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.text());
     } catch (error) {
@@ -65,7 +65,7 @@ async function DeleteSubject() {
         let url = "http://localhost:8080/subjects/";
         let response = await fetch(url, {
             method: "DELETE",
-            body: JSON.stringify({ name : props.target.name })
+            body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.text());
     } catch (error) {
@@ -78,7 +78,7 @@ async function DeleteTag() {
         let url = "http://localhost:8080/tags/";
         let response = await fetch(url, {
             method: "DELETE",
-            body: JSON.stringify({ name : props.target.name })
+            body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.test());
     } catch (error) {
@@ -86,9 +86,13 @@ async function DeleteTag() {
     }
 }
 
-function EditObject() {
-    adminStore.edit = true;
+function EditObject() { // This doesn't work yet
+    console.log("button pressed!");
+    adminStore.targetType = props.type;
     adminStore.editTarget = props.target;
+    adminStore.edit = true;
+    console.log(adminStore.edit);
+    console.log(adminStore.editTarget);
 }
 
 </script>
@@ -97,33 +101,52 @@ function EditObject() {
         <span> {{ props.target.name }} </span>
         <span> {{ props.target.gmail }} </span>
         <span> {{ props.target.phoneNumber }} </span>
-        <button @click="DeleteTeacher" class="inline-button">Delete</button>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteTeacher" class="inline-button">Delete</button>
+        </div>
     </div>
     <div class="items" v-else-if="props.type === 'student'" id="item-student">
         <span> {{ props.target.name }} </span>
         <span> {{ props.target.gmail }} </span>
         <span> {{ props.target.phoneNumber }} </span>
-        <button @click="DeleteStudent" class="inline-button">Delete</button>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteStudent" class="inline-button">Delete</button>
+        </div>
     </div>
     <div class="items" v-else-if="props.type === 'group'" id="item-group">
         <span> {{ props.target.name }} </span>
         <span> {{ props.target.members.length }} Member(s)</span>
-        <button @click="DeleteGroup" class="inline-button">Delete</button>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteGroup" class="inline-button">Delete</button>
+        </div>
     </div>
     <div class="items" v-else-if="props.type === 'classroom'" id="item-classroom">
         <span> {{ props.target.name }} </span>
-        <button @click="DeleteClassroom" class="inline-button">Delete</button>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteClassroom" class="inline-button">Delete</button>
+        </div>
     </div>
     <div class="items" v-else-if="props.type === 'subject'" id="item-subject">
         <span> {{ props.target.name }} </span>
-        <button @click="DeleteSubject" class="inline-button">Delete</button>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteSubject" class="inline-button">Delete</button>
+        </div>
     </div>
     <div class="items" v-else-if="props.type === 'tag'" id="item-tag">
         <span> {{ props.target.name }} </span>
-        <button @click="DeleteTag" class="inline-button">Delete</button>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteTag" class="inline-button">Delete</button>
+        </div>
     </div>
 </template>
 <style scoped>
+
 .items {
     display: grid;
     /* grid-auto-flow: column; */
@@ -135,7 +158,7 @@ function EditObject() {
     background-color: rgb(210, 210, 210);
 }
 
-button {
+.button-container {
     justify-self: right;
 }
 
@@ -151,9 +174,19 @@ button {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-#item-group { grid-template-columns: 1fr 1fr 1fr; }
+#item-group {
+    grid-template-columns: 1fr 1fr 1fr;
+}
 
-#item-classroom { grid-template-columns: 1fr 1fr; }
-#item-subject   { grid-template-columns: 1fr 1fr; }
-#item-tag       { grid-template-columns: 1fr 1fr; }
+#item-classroom {
+    grid-template-columns: 1fr 1fr;
+}
+
+#item-subject {
+    grid-template-columns: 1fr 1fr;
+}
+
+#item-tag {
+    grid-template-columns: 1fr 1fr;
+}
 </style>

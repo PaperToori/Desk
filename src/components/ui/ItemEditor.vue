@@ -1,10 +1,12 @@
 <script setup>
 import { useAdminStore } from '@/stores/store';
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 
 let adminStore = useAdminStore();
 
-watch(() => adminStore.edit, () => { });
+watch(() => adminStore.edit, () => { 
+    console.log(newName.value);
+});
 
 let newSocialSecurityNumber = ref(adminStore.editTarget.socialSecurityNumber);
 let newName = ref(adminStore.editTarget.name);
@@ -66,12 +68,12 @@ async function PatchRequest() {
 
 </script>
 <template>
-    <div id="container-edit" v-if="adminStore.edit === true">
-        <div class="box-edit" v-if="adminStore.editTarget === 'teacher'">
+    <div class="containeredit" v-if="adminStore.edit === true">
+        <!-- <div class="boxedit" v-if="adminStore.targetType === 'teacher'">
             <input type="text" v-model="name">
-            <!-- more to come when the pull arrives -->
+            more to come when the pull arrives
         </div>
-        <div class="box-edit" v-if="adminStore.editTarget === 'student'">
+        <div class="boxedit" v-if="adminStore.targetType === 'student'">
             <input type="text" v-model="newSocialSecurityNumber">
             <input type="text" v-model="newName">
             <input type="text" v-model="newEmail">
@@ -80,22 +82,35 @@ async function PatchRequest() {
             <input type="text" v-model="newAdress">
             <input type="text" v-model="newZip">
             <input type="text" v-model="newCity">
-            <!-- code to add/remove guardians & tags -->
+            code to add/remove guardians & tags
         </div>
-        <div class="box-edit" v-if="adminStore.editTarget === 'group'">
+        <div class="boxedit" v-if="adminStore.targetType === 'group'">
             <input type="text" v-model="newName">
-            <!-- Code to add/remove members -->
+            Code to add/remove members
         </div>
-        <div class="box-edit" v-if="adminStore.editTarget === 'classroom'">
-            <input type="text" v-model="newName">
-        </div>
-        <div class="box-edit" v-if="adminStore.editTarget === 'subject'">
+        <div class="boxedit" v-if="adminStore.targetType === 'classroom'">
             <input type="text" v-model="newName">
         </div>
-        <div class="box-edit" v-if="adminStore.editTarget === 'tag'">
+        <div class="boxedit" v-if="adminStore.targetType === 'subject'">
             <input type="text" v-model="newName">
         </div>
-        <button @click="PatchRequest">Save</button>
+        <div class="boxedit" v-if="adminStore.targetType === 'tag'">
+            <input type="text" v-model="newName">
+        </div>
+        <button @click="PatchRequest">Save</button> -->
     </div>
 </template>
-<style scoped></style>
+<style scoped>
+.containeredit {
+    height: 40vh;
+    background-color: rgb(130, 130, 130);
+    border: 2px;
+    padding-top: 1vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    max-width: 85vw;
+}
+.box-edit{}
+</style>

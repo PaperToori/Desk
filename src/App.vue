@@ -23,16 +23,16 @@ import Signout from './components/ui/Signout.vue'
 .Screen {
   display: grid;
   grid-template-columns: 15fr 85fr;
-  width: 100vw;
+  max-width: 100vw;
   height: 100vh;
 }
 
 .Bar {
   display: grid;
-  grid-template-rows: 1fr 6fr;
+  grid-template-rows: 15vh 85vh;
   background-color: rgb(180, 180, 180);
   width: 15vw;
-  height: 100vh;
+  height: auto;
 }
 
 /* .schedule {
