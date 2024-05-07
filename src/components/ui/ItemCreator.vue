@@ -18,6 +18,7 @@ let studentZip = ref();
 let studentCity = ref();
 let studentGuardian = ref();
 let tempPassword = ref();
+let studentGroup = ref();
 
 watch(() => adminStore.selected, () => {
     // Reset text boxes and status display
@@ -100,6 +101,7 @@ async function PutRequest() { // Student functionality is currently fucked
                     city: studentCity.value,
                     guardian: studentGuardian.value,
                     tempPassword: tempPassword.value,
+                    group: studentGroup.value,
                 })
             });
         } catch (error) {
@@ -207,7 +209,7 @@ function getAllGroupMembers() {
     </div>
     <div id="input-student">
         <div>
-            <h2>Personuppgifter</h2>
+            <h3>Personuppgifter</h3>
             <input type="text" placeholder="Förnamn Efternamn" v-model="studentName">
             <input type="text" placeholder="Personnummer YYYYMMDD-XXXX" v-model="studentSocialSecurityNumber">
             <input type="text" placeholder="Email" v-model="studentEmail">
@@ -216,11 +218,11 @@ function getAllGroupMembers() {
             <input type="text" placeholder="postkod" v-model="studentZip">
             <input type="text" placeholder="Stad" v-model="studentCity">
             <input type="text" placeholder="vårdnashavare" v-model="studentGuardian">
-            <h2>Skoluppgifter</h2>
+            <h3>Skoluppgifter</h3>
             <input type="text" placeholder="Klass" v-model="studentGroup">
             <button @click="tagCount++">Add Tag</button>
             <button @click="DecrimentTagCount">Remove Tag</button>
-            <h2>administration</h2>
+            <h3>Administration</h3>
             <input type="password" placeholder="temporärt lösenord" v-model="tempPassword">
         </div>
         <div class="bunch-of-stuff">
@@ -274,6 +276,7 @@ button {
     margin-left: 4vw;
     padding: 3px;
 }
+h3 { margin-left : 1vw } 
 
 .bunch-of-stuff {
     height: 30vh;
