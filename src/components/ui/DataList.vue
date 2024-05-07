@@ -15,6 +15,8 @@ const props = defineProps({
 let adminStore = useAdminStore();
 
 watch(() => adminStore.selected, () => {
+    console.log("hej");
+
     // Hide all options
     document.getElementById('list-teachers').style.display = 'none';
     document.getElementById('list-students').style.display = 'none';
@@ -84,7 +86,7 @@ watch(() => adminStore.selected, () => {
     max-height: 100%;
     overflow-y: auto;
  }
-#list-teachers   { display: grid; }
+#list-teachers   { display: none; }
 #list-students   { display: none; }
 #list-groups     { display: none; }
 #list-classrooms { display: none; }

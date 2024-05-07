@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useAdminStore } from '@/stores/store';
 
 const adminStore = useAdminStore();
-let selectedSchema = ref('teacher');
+let selectedSchema = ref('');
 
 </script>
 <template>
@@ -40,6 +40,6 @@ input[type="radio"]{
     margin: 2%
 }
 input[type="radio"]:checked {
-    margin: 10%;
+    margin-left: 10%;
 }
 </style>

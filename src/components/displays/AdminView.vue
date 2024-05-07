@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, watch } from 'vue';
+import { onBeforeMount, watch, ref } from 'vue';
 import { useAdminStore } from '@/stores/store';
 import DataList from '../ui/DataList.vue';
 import ItemCreator from '../ui/ItemCreator.vue';
@@ -20,11 +20,13 @@ watch(() => adminStore.selected, () => {
 
 onBeforeMount(async () => {
     // fetch everything from db...
+    
     try {
         let response = await fetch("http://localhost:8080/teachers/", {
             method: "GET",
         });
         teachers = await response.json();
+        console.log(teachers);
     } catch (error) {
         console.log(error.message);
     }
@@ -33,6 +35,7 @@ onBeforeMount(async () => {
             method: "GET",
         });
         students = await response.json();
+        console.log(students);
     } catch (error) {
         console.log(error.message);
     }
@@ -41,6 +44,7 @@ onBeforeMount(async () => {
             method: "GET",
         });
         groups = await response.json();
+        console.log(groups);
     } catch (error) {
         console.log(error.message);
     }
@@ -49,6 +53,7 @@ onBeforeMount(async () => {
             method: "GET",
         });
         classrooms = await response.json();
+        console.log(classrooms);
     } catch (error) {
         console.log(error.message);
     }
@@ -57,6 +62,7 @@ onBeforeMount(async () => {
             method: "GET",
         });
         subjects = await response.json();
+        console.log(subjects);
     } catch (error) {
         console.log(error.message);
     }
@@ -65,6 +71,7 @@ onBeforeMount(async () => {
             method: "GET",
         });
         tags = await response.json();
+        console.log(tags);
     } catch (error) {
         console.log(error.message);
     }
