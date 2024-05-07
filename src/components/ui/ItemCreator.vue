@@ -9,14 +9,21 @@ let responseMessage = ref('No Status');
 let tagCount = ref(0);
 let studentCount = ref(0);
 
+let studentName = ref();
+let studentSocialSecurityNumber = ref();
+let studentEmail = ref();
+let studentPhoneNumber = ref();
+let studentAdress = ref();
+let studentZip = ref();
+let studentCity = ref();
+let studentGuardian = ref();
+let tempPassword = ref();
+
 watch(() => adminStore.selected, () => {
     // Reset text boxes and status display
     document.getElementById('teacher-name').value = '';
     document.getElementById('teacher-gmail').value = '';
     document.getElementById('teacher-phonenumber').value = '';
-    document.getElementById('student-name').value = '';
-    document.getElementById('student-gmail').value = '';
-    document.getElementById('student-phonenumber').value = '';
     document.getElementById('classroom-name').value = '';
     document.getElementById('subject-name').value = '';
     document.getElementById('tag-name').value = '';
@@ -44,7 +51,7 @@ watch(() => adminStore.selected, () => {
     } else if (adminStore.selected === 'subject') {
         document.getElementById('input-subject').style.display = 'inline';
     } else if (adminStore.selected === 'tag') {
-        document.getElementById('input-tag').style.display = 'inline'; 
+        document.getElementById('input-tag').style.display = 'inline';
     }
 });
 
@@ -67,7 +74,8 @@ async function PutRequest() { // Student functionality is currently fucked
                     name: teacherName,
                     gmail: teacherGmail,
                     phoneNumber: teacherPhoneNumber
-                }) });
+                })
+            });
         } catch (error) {
             console.log(error.message);
         }
@@ -75,9 +83,6 @@ async function PutRequest() { // Student functionality is currently fucked
     // /// Create new Student
     else if (adminStore.selected === 'student') {
         // Init values for ease of use
-        let studentName = document.getElementById('student-name').value;
-        let studentGmail = document.getElementById('student-gmail').value;
-        let studentPhoneNumber = document.getElementById('student-phonenumber').value;
         let studentTags = [...getAllStudentTags()];
 
         // Attempt POST request
@@ -85,11 +90,18 @@ async function PutRequest() { // Student functionality is currently fucked
             response = await fetch("http://localhost:8080/students/", {
                 method: "POST",
                 body: JSON.stringify({
-                    name: studentName,
-                    gmail: studentGmail,
-                    phoneNumber: studentPhoneNumber,
-                    tags: studentTags
-                }) });
+                    name: studentName.value,
+                    email: studentEmail.value,
+                    phoneNumber: studentPhoneNumber.value,
+                    tags: studentTags.value,
+                    socialSecurityNumber: studentSocialSecurityNumber.value,
+                    adress: studentAdress.value,
+                    zip: studentZip.value,
+                    city: studentCity.value,
+                    guardian: studentGuardian.value,
+                    tempPassword: tempPassword.value,
+                })
+            });
         } catch (error) {
             console.log(error.message);
         }
@@ -100,13 +112,13 @@ async function PutRequest() { // Student functionality is currently fucked
         let groupName = document.getElementById('group-name').value;
         let groupMembers = getAllGroupMembers();
 
-    // Attempt POST request
+        // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/groups/", {
                 method: "POST",
-                body : JSON.stringify({ 
-                    name : groupName,
-                    members : groupMembers 
+                body: JSON.stringify({
+                    name: groupName,
+                    members: groupMembers
                 })
             });
         } catch (error) {
@@ -159,13 +171,13 @@ async function PutRequest() { // Student functionality is currently fucked
         }
     }
     responseMessage.value = await response.text();
-    if (response.status === 200){
+    if (response.status === 200) {
         document.getElementById('status-message').style.backgroundColor = "rgb(100, 180, 100)";
     } else { document.getElementById('status-message').style.backgroundColor = "rgb(210, 110, 110)"; }
 }
 
-function DecrimentTagCount ()     { if (tagCount.value > 0)     { tagCount.value--;     } }
-function DecrimentStudentCount () { if (studentCount.value > 0) { studentCount.value--; } }
+function DecrimentTagCount() { if (tagCount.value > 0) { tagCount.value--; } }
+function DecrimentStudentCount() { if (studentCount.value > 0) { studentCount.value--; } }
 
 function getAllStudentTags() {
     let selectedTags = [];
@@ -195,11 +207,21 @@ function getAllGroupMembers() {
     </div>
     <div id="input-student">
         <div>
-            <input id="student-name" type="text" placeholder="Full Name">
-            <input id="student-gmail" type="text" placeholder="Gmail">
-            <input id="student-phonenumber" type="tel" placeholder="Phone Number">
+            <h2>Personuppgifter</h2>
+            <input type="text" placeholder="Förnamn Efternamn" v-model="studentName">
+            <input type="text" placeholder="Personnummer YYYYMMDD-XXXX" v-model="studentSocialSecurityNumber">
+            <input type="text" placeholder="Email" v-model="studentEmail">
+            <input type="tel" placeholder="Telefonnummer" v-model="studentPhoneNumber">
+            <input type="text" placeholder="Adress" v-model="studentAdress">
+            <input type="text" placeholder="postkod" v-model="studentZip">
+            <input type="text" placeholder="Stad" v-model="studentCity">
+            <input type="text" placeholder="vårdnashavare" v-model="studentGuardian">
+            <h2>Skoluppgifter</h2>
+            <input type="text" placeholder="Klass" v-model="studentGroup">
             <button @click="tagCount++">Add Tag</button>
             <button @click="DecrimentTagCount">Remove Tag</button>
+            <h2>administration</h2>
+            <input type="password" placeholder="temporärt lösenord" v-model="tempPassword">
         </div>
         <div class="bunch-of-stuff">
             <select v-for="n in tagCount" class="student-list-tags">
@@ -207,7 +229,7 @@ function getAllGroupMembers() {
             </select>
         </div>
     </div>
-    
+
     <div id="input-group">
         <div>
             <input id="group-name" type="text" placeholder="Group Name">
@@ -258,7 +280,7 @@ button {
     overflow-y: auto;
 }
 
-#status-message { 
+#status-message {
     display: inline-block;
     text-align: center;
     width: 130px;
@@ -267,12 +289,26 @@ button {
     border-radius: 20px;
     background-color: rgb(180, 180, 180);
 }
-#input-student   { 
+
+#input-student {
     display: none;
     grid-auto-flow: column;
 }
-#input-group     { display: none; grid-auto-flow: column; }
-#input-classroom { display: none; }
-#input-subject   { display: none; }
-#input-tag       { display: none; }
+
+#input-group {
+    display: none;
+    grid-auto-flow: column;
+}
+
+#input-classroom {
+    display: none;
+}
+
+#input-subject {
+    display: none;
+}
+
+#input-tag {
+    display: none;
+}
 </style>
