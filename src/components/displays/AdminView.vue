@@ -22,50 +22,26 @@ onBeforeMount(async () => {
     // fetch everything from db...
     
     try {
-        let response = await fetch("http://localhost:8080/teachers/", {
-            method: "GET",
-        });
-        teachers = await response.json();
-    } catch (error) {
-        console.log(error.message);
-    }
-    try {
-        let response = await fetch("http://localhost:8080/students/", {
-            method: "GET",
-        });
-        students = await response.json();
-    } catch (error) {
-        console.log(error.message);
-    }
-    try {
-        let response = await fetch("http://localhost:8080/groups/", {
-            method: "GET",
-        });
-        groups = await response.json();
-    } catch (error) {
-        console.log(error.message);
-    }
-    try {
-        let response = await fetch("http://localhost:8080/classrooms/", {
-            method: "GET",
-        });
-        classrooms = await response.json();
-    } catch (error) {
-        console.log(error.message);
-    }
-    try {
-        let response = await fetch("http://localhost:8080/subjects/", {
-            method: "GET",
-        });
-        subjects = await response.json();
-    } catch (error) {
-        console.log(error.message);
-    }
-    try {
-        let response = await fetch("http://localhost:8080/tags/", {
-            method: "GET",
-        });
-        tags = await response.json();
+        let teacherResponse = await fetch("http://localhost:8080/teachers/", {
+            method: "GET" });
+        let studentResponse = await fetch("http://localhost:8080/students/", {
+            method: "GET" });
+        let groupResponse = await fetch("http://localhost:8080/groups/", {
+            method: "GET" });
+        let classroomResponse = await fetch("http://localhost:8080/classrooms/", {
+            method: "GET" });
+        let subjectResponse = await fetch("http://localhost:8080/subjects/", {
+            method: "GET" });
+        let tagResponse = await fetch("http://localhost:8080/tags/", {
+            method: "GET" });
+
+        teachers = await teacherResponse.json();
+        students = await studentResponse.json();
+        groups = await groupResponse.json();
+        classrooms = await classroomResponse.json();
+        subjects = await subjectResponse.json();
+        tags = await tagResponse.json();
+
     } catch (error) {
         console.log(error.message);
     }
