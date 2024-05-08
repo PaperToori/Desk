@@ -7,21 +7,16 @@ import ItemEditor from '../ui/ItemEditor.vue';
 
 const adminStore = useAdminStore();
 
-let teachers = [];
-let students = [];
-let groups = [];
-let classrooms = [];
-let subjects = [];
-let tags = [];
+let teachers   = ref([]);
+let students   = ref([]);
+let groups     = ref([]);
+let classrooms = ref([]);
+let subjects   = ref([]);
+let tags       = ref([]);
 
-watch(() => adminStore.selected, () => {
-
-});
-
-onBeforeMount(async () => {
-    // fetch everything from db...
-    
-    try {
+const fetchData = async () => {
+   // fetch everything from db...
+   try {
         let teacherResponse = await fetch("http://localhost:8080/teachers/", {
             method: "GET" });
         let studentResponse = await fetch("http://localhost:8080/students/", {
@@ -35,33 +30,40 @@ onBeforeMount(async () => {
         let tagResponse = await fetch("http://localhost:8080/tags/", {
             method: "GET" });
 
-        teachers = await teacherResponse.json();
-        students = await studentResponse.json();
-        groups = await groupResponse.json();
-        classrooms = await classroomResponse.json();
-        subjects = await subjectResponse.json();
-        tags = await tagResponse.json();
-
+        teachers  .value = await teacherResponse  .json();
+        students  .value = await studentResponse  .json();
+        groups    .value = await groupResponse    .json();
+        classrooms.value = await classroomResponse.json();
+        subjects  .value = await subjectResponse  .json();
+        tags      .value = await tagResponse      .json();
     } catch (error) {
         console.log(error.message);
     }
+}
+fetchData();
+
+onBeforeMount(async () => {
+    
 });
 
 </script>
 <template>
     <!-- <h2>{{ adminStore.SelectedUpperCase() }}</h2> -->
     <div class="datalist">
-        <DataList
-        :teachers  ="teachers" 
-        :students  ="students" 
-        :groups    ="groups"
-        :classrooms="classrooms" 
-        :subjects  ="subjects"
-        :tags      ="tags"/>
+        <DataList 
+        :teachers="teachers" 
+        :students="students" 
+        :groups="groups" 
+        :classrooms="classrooms"
+        :subjects="subjects" 
+        :tags="tags" />
     </div>
-    <ItemEditor/>
+    <ItemEditor />
     <div class="itemcreator">
-        <ItemCreator :tags="tags" :students="students" :groups="groups"/>
+        <ItemCreator 
+        :tags="tags" 
+        :students="students" 
+        :groups="groups" />
     </div>
 </template>
 
