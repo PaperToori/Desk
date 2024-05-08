@@ -14,9 +14,6 @@ const props = defineProps({
 
 let adminStore = useAdminStore();
 
-watch(() => adminStore.selected, () => {
-});
-
 </script>
 <template>
 

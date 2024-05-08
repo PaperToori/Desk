@@ -3,6 +3,9 @@ import { onBeforeMount, ref } from 'vue';
 import DataList from '../ui/DataList.vue';
 import ItemCreator from '../ui/ItemCreator.vue';
 import ItemEditor from '../ui/ItemEditor.vue';
+import { useAdminStore } from '@/stores/store';
+
+let adminStore = useAdminStore();
 
 let teachers   = ref([]);
 let students   = ref([]);
@@ -40,7 +43,6 @@ onBeforeMount(async () => {
 
 </script>
 <template>
-    <!-- <h2>{{ adminStore.SelectedUpperCase() }}</h2> -->
     <div class="datalist">
         <DataList 
         :teachers="teachers" 
@@ -50,8 +52,10 @@ onBeforeMount(async () => {
         :subjects="subjects" 
         :tags="tags" />
     </div>
-    <ItemEditor />
-    <div class="itemcreator">
+    <div class="itemaspect" v-if="adminStore.edit === true">
+        <ItemEditor />
+    </div>
+    <div class="itemaspect">
         <ItemCreator 
         :tags="tags" 
         :students="students" 
@@ -78,7 +82,7 @@ h2 {
     max-width: 85vw;
 }
 
-.itemcreator {
+.itemaspect {
     height: auto;
     background-color: rgb(130, 130, 130);
     border: 2px;
