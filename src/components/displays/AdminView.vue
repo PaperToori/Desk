@@ -1,11 +1,8 @@
 <script setup>
-import { onBeforeMount, watch, ref } from 'vue';
-import { useAdminStore } from '@/stores/store';
+import { onBeforeMount, ref } from 'vue';
 import DataList from '../ui/DataList.vue';
 import ItemCreator from '../ui/ItemCreator.vue';
 import ItemEditor from '../ui/ItemEditor.vue';
-
-const adminStore = useAdminStore();
 
 let teachers   = ref([]);
 let students   = ref([]);
