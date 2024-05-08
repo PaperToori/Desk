@@ -2,7 +2,7 @@
 import { watch, ref } from 'vue';
 import { useAdminStore, useAuthStore } from '@/stores/store';
 
-const props = defineProps({ tags: Array, students: Array });
+const props = defineProps({ tags : Array, students : Array, groups : Array});
 
 const Auth = useAuthStore();
 Auth.Inject();
@@ -228,6 +228,10 @@ function getAllGroupMembers() {
             <input type="text" placeholder="Stad" v-model="studentCity">
             <input type="text" placeholder="vårdnashavare" v-model="studentGuardian">
             <h3>Skoluppgifter</h3>
+            <select name="klass">
+                <option value="default" disabled selected hidden> Välj Klass</option>
+                <option v-for="group in props.groups" :value="group.name">{{ group.name }}</option>
+            </select>
             <input type="text" placeholder="Klass" v-model="studentGroup">
             <button @click="tagCount++">Add Tag</button>
             <button @click="DecrimentTagCount">Remove Tag</button>
@@ -283,12 +287,14 @@ select {
 button {
     margin-top: 1vh;
     margin-left: 4vw;
+    margin-bottom: 3vh;
     padding: 3px;
 }
 h3 { margin-left : 1vw } 
 
 .bunch-of-stuff {
-    height: 30vh;
+    height: auto;
+    max-height: 38.5vh;
     overflow-y: auto;
 }
 
