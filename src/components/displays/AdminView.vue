@@ -14,9 +14,9 @@ let classrooms = ref([]);
 let subjects   = ref([]);
 let tags       = ref([]);
 
-const fetchData = async () => {
-   // fetch everything from db...
-   try {
+onBeforeMount(async () => {
+    try {
+       // fetch everything from db...
         let teacherResponse = await fetch("http://localhost:8080/teachers/", {
             method: "GET" });
         let studentResponse = await fetch("http://localhost:8080/students/", {
@@ -29,7 +29,7 @@ const fetchData = async () => {
             method: "GET" });
         let tagResponse = await fetch("http://localhost:8080/tags/", {
             method: "GET" });
-
+        // Input into local variables
         teachers  .value = await teacherResponse  .json();
         students  .value = await studentResponse  .json();
         groups    .value = await groupResponse    .json();
@@ -39,11 +39,6 @@ const fetchData = async () => {
     } catch (error) {
         console.log(error.message);
     }
-}
-fetchData();
-
-onBeforeMount(async () => {
-    
 });
 
 </script>
