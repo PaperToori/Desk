@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/store';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, linkWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
 const provider = new GoogleAuthProvider();
 
 const Auth = useAuthStore();
 Auth.Inject();
+
 let profile = ref(await getProfile());
 let profileSelector = ref(0);
 
@@ -23,7 +24,6 @@ async function getProfile() {
     let headersList = {
         "id": id
     }
-    // Attempt POST request
     try {
         returnProfile = await fetch("http://localhost:8080/admin/profile", {
             method: "GET",
@@ -33,13 +33,12 @@ async function getProfile() {
     } catch (error) {
         console.log(error.message);
     }
-    console.log(returnProfile);
+    Auth.Inject();
     return returnProfile;
 }
 //TODO 
 // NOT DONE
 async function submitForm() {
-    let response;
     let id = "undefined";
     if (Auth.auth.currentUser) {
         id = await Auth.auth.currentUser.getIdToken(true);
@@ -47,16 +46,22 @@ async function submitForm() {
     let headersList = {
         "id": id
     }
-    // Attempt POST request
+    let bodyList = {
+        "profile": profile.value.profile[profileSelector.value],
+        "profileNumber": profileSelector.value
+    }
+    console.log("trying to patch profile", profile.value.profile[profileSelector.value]);
+    console.log(profileSelector.value);
     try {
-        response = await fetch("http://localhost:8080/admin/profile", {
-            method: "POST",
+        await fetch("http://localhost:8080/admin/profile", {
+            method: "PATCH",
             headers: headersList,
-            body: profile.profile[profileSelector]
+            body: JSON.stringify(bodyList)
         });
     } catch (error) {
         console.log(error.message);
     }
+    await getProfile();
 }
 
 async function login() {
@@ -80,6 +85,22 @@ async function login() {
     profile.value = await getProfile();
 }
 
+async function linkGooglePopup() {
+    console.log("Logging in with google")
+    await linkWithPopup(Auth.auth.currentUser, provider)
+        .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const user = result.user;
+            console.log("Accounts successfully linked.");
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+        });
+    profile.value = await getProfile();
+}
 async function loginGooglePopup() {
     console.log("Logging in with google")
     await signInWithPopup(Auth.auth, provider)
@@ -91,7 +112,7 @@ async function loginGooglePopup() {
             const user = result.user;
             // IdP data available using getAdditionalUserInfo(result)
             // ...
-            console.log("logged in with", credential);
+            console.log("logged in with google");
         }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;
@@ -107,7 +128,6 @@ async function loginGooglePopup() {
             console.log(credential);
         });
     profile.value = await getProfile();
-
 }
 
 </script>
@@ -118,10 +138,11 @@ async function loginGooglePopup() {
         <input type="email" placeholder="example@email.com" v-model="email">
         <input type="password" placeholder="password" v-model="password">
         <button type="submit" @click="login">login</button>
+        <br>
         <button @click="loginGooglePopup">logga in med Google</button>
     </div>
     <div v-else>
-        <button @click="loginGooglePopup">länka Google med konto</button>
+        <button @click="linkGooglePopup">länka Google med konto</button>
         <div v-if="profile.profileType.length > 1">
             profil
             <button @click="profileSelector = 0">{{ profile.profileType[0] }}</button>
@@ -130,7 +151,7 @@ async function loginGooglePopup() {
                 }}</button>
         </div>
         <p>profile: {{ profile.profile[profileSelector].name }}</p>
-        <form method="POST" @submit:prevent="submitForm">
+        <form>
             <label>
                 Namn: <input type="text" v-model="profile.profile[profileSelector].name">
             </label>
@@ -151,12 +172,12 @@ async function loginGooglePopup() {
                 adress: <input type="text" v-model="profile.profile[profileSelector].adress" readonly>
             </label>
             <label>
-                poskod: <input type="text" v-model="profile.profile[profileSelector].zip">
+                postkod: <input type="text" v-model="profile.profile[profileSelector].zip">
             </label>
             <label>
                 Vårdnashavare: <input type="text" v-model="profile.profile[profileSelector].guardian">
             </label>
-            <button type="submit">Spara ändringar</button>
         </form>
+        <button @click="submitForm">Spara ändringar</button>
     </div>
 </template>
