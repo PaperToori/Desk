@@ -43,7 +43,6 @@ async function PatchRequest() {
     let id = "undefined";
     if (Auth.auth.currentUser) {
         id = await Auth.auth.currentUser.getIdToken(true);
-        console.log(id);
     }
     let headersList = {
         "id": id
@@ -54,7 +53,7 @@ async function PatchRequest() {
     else if (adminStore.selected === 'classroom') {
         try {
             url = "http://localhost:8080/classrooms/";
-            response = fetch(url, {
+            response = await fetch(url, {
                 method: "PATCH",
                 headers: headersList,
                 body: JSON.stringify({
@@ -65,10 +64,10 @@ async function PatchRequest() {
         }
         catch (error) { console.log(error.message); }
     }
-    else if (adminStore.edit === 'subject') {
+    else if (adminStore.selected === 'subject') {
         try {
             url = "http://localhost:8080/subjects/";
-            response = fetch(url, {
+            response = await fetch(url, {
                 method: "PATCH",
                 headers: headersList,
                 body: JSON.stringify({ 
@@ -79,14 +78,14 @@ async function PatchRequest() {
         }
         catch (error) { console.log(error.message); }
     }
-    else if (adminStore.edit === 'tag') {
+    else if (adminStore.selected === 'tag') {
         try {
             url = "http://localhost:8080/tags/";
-            response = fetch(url, {
+            response = await fetch(url, {
                 method: "PATCH",
                 headers: headersList,
                 body: JSON.stringify({ 
-                    name: newName.value,
+                    newName: newName.value,
                     target: adminStore.editTarget.name 
                 })
             });
