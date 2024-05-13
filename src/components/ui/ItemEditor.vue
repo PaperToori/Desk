@@ -1,45 +1,67 @@
 <script setup>
-import { useAdminStore } from '@/stores/store';
+import { useAdminStore, useAuthStore } from '@/stores/store';
 import { watch, ref } from 'vue';
 
+let Auth = useAuthStore();
 let adminStore = useAdminStore();
 
 watch(() => adminStore.selected, () => {
     adminStore.HideEdit();
 });
-watch(() => adminStore.edit, () => {
-    if (adminStore.edit === false) { return; }
-
+watch(() => adminStore.editTarget, () => {
+    newSocialSecurityNumber.value = adminStore.editTarget.socialSecurityNumber;
+    newName.value = adminStore.editTarget.name;
+    newEmail.value = adminStore.editTarget.email;
+    newPhoneNumber.value = adminStore.editTarget.phoneNumber;
+    newGroup.value = adminStore.editTarget.group;
+    newAdress.value = adminStore.editTarget.adress;
+    newZip.value = adminStore.editTarget.zip;
+    newCity.value = adminStore.editTarget.city;
+    newTags.value = adminStore.editTarget.tags;             // ARRAY
+    newGuardian.value = adminStore.editTarget.guardian;     // ARRAY
+    newChild.value = adminStore.editTarget.child;           // ARRAY
+    newMembers.value = adminStore.editTarget.members;       // ARRAY
 });
 
 let newSocialSecurityNumber = ref(adminStore.editTarget.socialSecurityNumber);
-let newName = ref(adminStore.editTarget.name);
-let newEmail = ref(adminStore.editTarget.email);
-let newPhoneNumber = ref(adminStore.editTarget.phoneNumber);
-let newGroup = ref(adminStore.editTarget.group);
-let newAdress = ref(adminStore.editTarget.adress);
-let newZip = ref(adminStore.editTarget.zip);
-let newCity = ref(adminStore.editTarget.city);
-let newTags = ref(adminStore.editTarget.tags);         // ARRAY
-let newGuardian = ref(adminStore.editTarget.guardian);     // ARRAY
-let newChild = ref(adminStore.editTarget.child);        // ARRAY
-let newMembers = ref(adminStore.editTarget.members);      // ARRAY
+let newName                 = ref(adminStore.editTarget.name);
+let newEmail                = ref(adminStore.editTarget.email);
+let newPhoneNumber          = ref(adminStore.editTarget.phoneNumber);
+let newGroup                = ref(adminStore.editTarget.group);
+let newAdress               = ref(adminStore.editTarget.adress);
+let newZip                  = ref(adminStore.editTarget.zip);
+let newCity                 = ref(adminStore.editTarget.city);
+let newTags                 = ref(adminStore.editTarget.tags);      // ARRAY
+let newGuardian             = ref(adminStore.editTarget.guardian);  // ARRAY
+let newChild                = ref(adminStore.editTarget.child);     // ARRAY
+let newMembers              = ref(adminStore.editTarget.members);   // ARRAY
 
 
 async function PatchRequest() {
     let url;
     let response;
-    if (adminStore.edit === 'teacher') { }
-    else if (adminStore.edit === 'student') { }
-    else if (adminStore.edit === 'group') { }
-    else if (adminStore.edit === 'classroom') {
+    let id = "undefined";
+    if (Auth.auth.currentUser) {
+        id = await Auth.auth.currentUser.getIdToken(true);
+        console.log(id);
+    }
+    let headersList = {
+        "id": id
+    }
+    if (adminStore.selected === 'teacher') { }
+    else if (adminStore.selected === 'student') { }
+    else if (adminStore.selected === 'group') { }
+    else if (adminStore.selected === 'classroom') {
         try {
             url = "http://localhost:8080/classrooms/";
             response = fetch(url, {
                 method: "PATCH",
-                body: JSON.stringify({ name: newName.value })
+                headers: headersList,
+                body: JSON.stringify({
+                    newName: newName.value,
+                    target: adminStore.editTarget.name
+                })
             });
-            console.log((await response).text());
         }
         catch (error) { console.log(error.message); }
     }
@@ -48,9 +70,12 @@ async function PatchRequest() {
             url = "http://localhost:8080/subjects/";
             response = fetch(url, {
                 method: "PATCH",
-                body: JSON.stringify({ name: newName.value })
+                headers: headersList,
+                body: JSON.stringify({ 
+                    newName: newName.value,
+                    target: adminStore.editTarget.name
+                })
             });
-            console.log((await response).text());
         }
         catch (error) { console.log(error.message); }
     }
@@ -59,9 +84,12 @@ async function PatchRequest() {
             url = "http://localhost:8080/tags/";
             response = fetch(url, {
                 method: "PATCH",
-                body: JSON.stringify({ name: newName.value })
+                headers: headersList,
+                body: JSON.stringify({ 
+                    name: newName.value,
+                    target: adminStore.editTarget.name 
+                })
             });
-            console.log((await response).text());
         }
         catch (error) { console.log(error.message); }
     }

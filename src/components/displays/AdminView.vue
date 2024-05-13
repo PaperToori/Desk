@@ -3,39 +3,61 @@ import { onBeforeMount, ref } from 'vue';
 import DataList from '../ui/DataList.vue';
 import ItemCreator from '../ui/ItemCreator.vue';
 import ItemEditor from '../ui/ItemEditor.vue';
-import { useAdminStore } from '@/stores/store';
+import { useAdminStore, useAuthStore } from '@/stores/store';
 
 let adminStore = useAdminStore();
+const Auth = useAuthStore();
+Auth.Inject();
 
-let teachers   = ref([]);
-let students   = ref([]);
-let groups     = ref([]);
+let teachers = ref([]);
+let students = ref([]);
+let groups = ref([]);
 let classrooms = ref([]);
-let subjects   = ref([]);
-let tags       = ref([]);
+let subjects = ref([]);
+let tags = ref([]);
 
 onBeforeMount(async () => {
     try {
-       // fetch everything from db...
+        let id = "undefined";
+        if (Auth.auth.currentUser) {
+            id = await Auth.auth.currentUser.getIdToken(true);
+            console.log(id);
+        }
+        let headersList = {
+            "id": id
+        }
+        // fetch everything from db...
         let teacherResponse = await fetch("http://localhost:8080/teachers/", {
-            method: "GET" });
+            method: "GET",
+            headers: headersList
+        });
         let studentResponse = await fetch("http://localhost:8080/students/", {
-            method: "GET" });
+            method: "GET",
+            headers: headersList
+        });
         let groupResponse = await fetch("http://localhost:8080/groups/", {
-            method: "GET" });
+            method: "GET",
+            headers: headersList
+        });
         let classroomResponse = await fetch("http://localhost:8080/classrooms/", {
-            method: "GET" });
+            method: "GET",
+            headers: headersList
+        });
         let subjectResponse = await fetch("http://localhost:8080/subjects/", {
-            method: "GET" });
+            method: "GET",
+            headers: headersList
+        });
         let tagResponse = await fetch("http://localhost:8080/tags/", {
-            method: "GET" });
+            method: "GET",
+            headers: headersList
+        });
         // Input into local variables
-        teachers  .value = await teacherResponse  .json();
-        students  .value = await studentResponse  .json();
-        groups    .value = await groupResponse    .json();
+        teachers.value = await teacherResponse.json();
+        students.value = await studentResponse.json();
+        groups.value = await groupResponse.json();
         classrooms.value = await classroomResponse.json();
-        subjects  .value = await subjectResponse  .json();
-        tags      .value = await tagResponse      .json();
+        subjects.value = await subjectResponse.json();
+        tags.value = await tagResponse.json();
     } catch (error) {
         console.log(error.message);
     }
@@ -44,22 +66,14 @@ onBeforeMount(async () => {
 </script>
 <template>
     <div class="datalist">
-        <DataList 
-        :teachers="teachers" 
-        :students="students" 
-        :groups="groups" 
-        :classrooms="classrooms"
-        :subjects="subjects" 
-        :tags="tags" />
+        <DataList :teachers="teachers" :students="students" :groups="groups" :classrooms="classrooms"
+            :subjects="subjects" :tags="tags" />
     </div>
     <div class="itemaspect" v-if="adminStore.edit === true">
         <ItemEditor />
     </div>
     <div class="itemaspect">
-        <ItemCreator 
-        :tags="tags" 
-        :students="students" 
-        :groups="groups" />
+        <ItemCreator :tags="tags" :students="students" :groups="groups" />
     </div>
 </template>
 
