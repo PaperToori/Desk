@@ -56,7 +56,7 @@ async function signup() {
         .then(async (userCredential) => {
             // Signed up
             const user = userCredential.user;
-            let documentStatus = await fetch("http://localhost:8080/auth/user/", {
+            let documentStatus = await fetch("http://localhost:8080/admin/user/", {
                 method: "POST",
                 body: JSON.stringify({
                     id: user.uid,
