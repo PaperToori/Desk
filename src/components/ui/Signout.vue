@@ -3,11 +3,19 @@ import { signOut } from 'firebase/auth';
 import { useAuthStore } from '@/stores/store';
 import { ref, watch } from 'vue';
 
+
 let profile = ref();
 const Auth = useAuthStore();
 Auth.Inject();
-profile.value=Auth.auth.currentUser;
-console.log(profile);
+await checkAuthState();
+async function checkAuthState() {
+    await Auth.auth.authStateReady();
+    if (Auth.auth.currentUser) {
+
+        profile.value = Auth.auth.currentUser;
+    }
+}
+
 async function signout() {
     console.log("attempting to signout");
     signOut(Auth.auth)
