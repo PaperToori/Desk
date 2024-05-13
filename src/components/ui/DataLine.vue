@@ -86,13 +86,10 @@ async function DeleteTag() {
     }
 }
 
-function EditObject() { // This doesn't work yet
-    console.log("button pressed!");
+function EditObject() {
     adminStore.targetType = props.type;
     adminStore.editTarget = props.target;
     adminStore.edit = true;
-    console.log(adminStore.edit);
-    console.log(adminStore.editTarget);
 }
 
 </script>
@@ -149,8 +146,6 @@ function EditObject() { // This doesn't work yet
 
 .items {
     display: grid;
-    /* grid-auto-flow: column; */
-    /* justify-content: space-between; */
     width: 95%;
     margin: 5px;
     padding: 5px;
