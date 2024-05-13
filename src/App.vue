@@ -6,16 +6,32 @@ import Signout from './components/ui/Signout.vue'
 
 <template>
   <div class="Screen">
-      <div class="Bar">
-          <NavBar/>
-          <div>
-            <MenuOperator/>
-            <Signout />
-          </div>
-      </div>
+    <div class="Bar">
+      <NavBar />
       <div>
-        <router-view></router-view>
+        <MenuOperator />
+        <Suspense>
+          <!-- main content -->
+          <Signout />
+          <!-- loading state -->
+          <template #fallback>
+            Loading...
+          </template>
+        </Suspense>
+        
       </div>
+    </div>
+    <div>
+      <Suspense>
+        <!-- main content -->
+        <router-view></router-view>
+        <!-- loading state -->
+        <template #fallback>
+          Loading...
+        </template>
+      </Suspense>
+
+    </div>
   </div>
 </template>
 
