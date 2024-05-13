@@ -62,7 +62,6 @@ async function PatchRequest() {
                     target: adminStore.editTarget.name
                 })
             });
-            console.log(await response.text());
         }
         catch (error) { console.log(error.message); }
     }
@@ -72,9 +71,11 @@ async function PatchRequest() {
             response = fetch(url, {
                 method: "PATCH",
                 headers: headersList,
-                body: JSON.stringify({ name: newName.value })
+                body: JSON.stringify({ 
+                    newName: newName.value,
+                    target: adminStore.editTarget.name
+                })
             });
-            console.log((await response).text());
         }
         catch (error) { console.log(error.message); }
     }
@@ -84,9 +85,11 @@ async function PatchRequest() {
             response = fetch(url, {
                 method: "PATCH",
                 headers: headersList,
-                body: JSON.stringify({ name: newName.value })
+                body: JSON.stringify({ 
+                    name: newName.value,
+                    target: adminStore.editTarget.name 
+                })
             });
-            console.log((await response).text());
         }
         catch (error) { console.log(error.message); }
     }
