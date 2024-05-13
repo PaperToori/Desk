@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/store';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+
+const provider = new GoogleAuthProvider();
 
 const Auth = useAuthStore();
 Auth.Inject();
@@ -78,6 +80,36 @@ async function login() {
     profile.value = await getProfile();
 }
 
+async function loginGooglePopup() {
+    console.log("Logging in with google")
+    await signInWithPopup(Auth.auth, provider)
+        .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            // IdP data available using getAdditionalUserInfo(result)
+            // ...
+            console.log("logged in with", credential);
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+            console.log(errorCode);
+            console.log(errorMessage);
+            console.log(email);
+            console.log(credential);
+        });
+    profile.value = await getProfile();
+
+}
+
 </script>
 
 <template>
@@ -86,8 +118,10 @@ async function login() {
         <input type="email" placeholder="example@email.com" v-model="email">
         <input type="password" placeholder="password" v-model="password">
         <button type="submit" @click="login">login</button>
+        <button @click="loginGooglePopup">logga in med Google</button>
     </div>
     <div v-else>
+        <button @click="loginGooglePopup">länka Google med konto</button>
         <div v-if="profile.profileType.length > 1">
             profil
             <button @click="profileSelector = 0">{{ profile.profileType[0] }}</button>
