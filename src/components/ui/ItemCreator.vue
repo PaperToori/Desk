@@ -4,14 +4,16 @@ import { useAdminStore, useAuthStore } from '@/stores/store';
 
 const props = defineProps({ tags: Array, students: Array, groups: Array });
 
+// Pinia Stores
 const Auth = useAuthStore();
 Auth.Inject();
 let adminStore = useAdminStore();
+
+// Variables --> Server response
 let responseMessage = ref('No Status');
 let smallResponseMessage = ref('No Status');
-let tagCount = ref(0);
-let studentCount = ref(0);
 
+// Variables --> Teacher (currently none)
 let teacherName = ref();
 let teacherSocialSecurityNumber = ref();
 let teacherEmail = ref();
@@ -22,6 +24,7 @@ let teacherCity = ref();
 let teacherCourse = ref();
 let teacherTempPassword = ref();
 
+// Variables --> Student
 let studentGuardianExists = ref(true);
 let studentName = ref();
 let studentSocialSecurityNumber = ref();
@@ -34,7 +37,9 @@ let studentGuardian = ref();
 let studentGuardianID = ref();
 let tempPassword = ref();
 let studentGroup = ref();
+let tagCount = ref(0);
 
+// Variables --> guardian
 let guardianName = ref();
 let guardianSocialSecurityNumber = ref();
 let guardianEmail = ref();
@@ -46,40 +51,25 @@ let guardianChild = ref();
 let guardianChildID = ref();
 let guardianTempPassword = ref();
 
+// Variables --> Group/Class
+let groupName = ref('');
+let groupList = ref([]);
+let studentCount = ref(0);
+
+// Variables --> Classroom, Subject, and Tag
+let classroomName = ref('');
+let subjectName = ref('');
+let tagName = ref('');
+
 watch(() => adminStore.selected, () => {
     // Reset text boxes and status display
-    document.getElementById('teacher-name').value = '';
-    document.getElementById('teacher-gmail').value = '';
-    document.getElementById('teacher-phonenumber').value = '';
-    document.getElementById('classroom-name').value = '';
-    document.getElementById('subject-name').value = '';
-    document.getElementById('tag-name').value = '';
+    classroomName.value = '';
+    subjectName.value = '';
+    tagName.value = '';
     document.getElementById('status-message').style.backgroundColor = 'rgb(180, 180, 180)';
     responseMessage.value = 'No Status';
     tagCount.value = 0;
     studentCount.value = 0;
-    // Hide all options
-    document.getElementById('input-teacher').style.display = 'none';
-    document.getElementById('input-student').style.display = 'none';
-    document.getElementById('input-group').style.display = 'none';
-    document.getElementById('input-classroom').style.display = 'none';
-    document.getElementById('input-subject').style.display = 'none';
-    document.getElementById('input-tag').style.display = 'none';
-
-    // Display the selected option
-    if (adminStore.selected === 'teacher') {
-        document.getElementById('input-teacher').style.display = 'inline';
-    } else if (adminStore.selected === 'student') {
-        document.getElementById('input-student').style.display = 'grid';
-    } else if (adminStore.selected === 'group') {
-        document.getElementById('input-group').style.display = 'grid';
-    } else if (adminStore.selected === 'classroom') {
-        document.getElementById('input-classroom').style.display = 'inline';
-    } else if (adminStore.selected === 'subject') {
-        document.getElementById('input-subject').style.display = 'inline';
-    } else if (adminStore.selected === 'tag') {
-        document.getElementById('input-tag').style.display = 'inline';
-    }
 });
 
 async function PutRequestGuardian() {
@@ -202,7 +192,7 @@ async function PutRequest() {
             "id": id,
             "guardian": studentGuardianID.value
         }
-        //check if guardian exsists
+        //check if guardian exists
         try {
             studentGuardianExists.value = await fetch("http://localhost:8080/guardians/exists", {
                 method: "GET",
@@ -244,18 +234,16 @@ async function PutRequest() {
             studentGuardianExists.value = false;
         }
     }
-    // /// Create New Group... this is gonna be a massive pain
+    // /// Create New Group
     else if (adminStore.selected === 'group') {
-        // Init values for ease of use
-        let groupName = document.getElementById('group-name').value;
-        let groupMembers = getAllGroupMembers();
-
+        // Init values
+        let groupMembers = GetGroupMembersInfo();
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/groups/", {
                 method: "POST",
                 body: JSON.stringify({
-                    name: groupName,
+                    name: groupName.value,
                     members: groupMembers
                 })
             });
@@ -265,14 +253,11 @@ async function PutRequest() {
     }
     // /// Create new Classroom 
     else if (adminStore.selected === 'classroom') {
-        // Init values for ease of use
-        let classroomName = document.getElementById('classroom-name').value;
-
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/classrooms/", {
                 method: "POST",
-                body: JSON.stringify({ name: classroomName })
+                body: JSON.stringify({ name: classroomName.value })
             });
         } catch (error) {
             console.log(error.message);
@@ -280,14 +265,11 @@ async function PutRequest() {
     }
     // /// Create new Subject
     else if (adminStore.selected === 'subject') {
-        // Init values for ease of use
-        let subjectName = document.getElementById('subject-name').value;
-
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/subjects/", {
                 method: "POST",
-                body: JSON.stringify({ name: subjectName })
+                body: JSON.stringify({ name: subjectName.value })
             });
         } catch (error) {
             console.log(error.message);
@@ -295,14 +277,11 @@ async function PutRequest() {
     }
     // /// Create new Tag
     else if (adminStore.selected === 'tag') {
-        // Init values for ease of use
-        let tagName = document.getElementById('tag-name').value;
-
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/tags/", {
                 method: "POST",
-                body: JSON.stringify({ name: tagName })
+                body: JSON.stringify({ name: tagName.value })
             });
         } catch (error) {
             console.log(error.message);
@@ -326,23 +305,21 @@ function getAllStudentTags() {
     return selectedTags;
 }
 
-function getAllGroupMembers() {
+function GetGroupMembersInfo() {
     let selectedStudents = [];
-    let memberSelectors = document.querySelectorAll(".group-list-students");
-    Array.from(memberSelectors).forEach((memberSelector) => {
+    groupList.value.forEach((member) => {
         selectedStudents.push({
-            id: memberSelector.value,
-            name: memberSelector.innerHTML
+            id: member._id,
+            name: member.name
         });
     });
-    console.log(selectedStudents);
     return selectedStudents;
 }
 
 </script>
 
 <template>
-    <div id="input-teacher">
+    <div v-if="adminStore.selected === 'teacher'">
         <div>
             <h3>Personuppgifter</h3>
             <input type="text" placeholder="Förnamn Efternamn" v-model="teacherName">
@@ -356,7 +333,7 @@ function getAllGroupMembers() {
             <input type="password" placeholder="temporärt lösenord" v-model="teacherTempPassword">
         </div>
     </div>
-    <div id="input-student">
+    <div class="columnautoflow" v-if="adminStore.selected === 'student'">
         <div>
             <div>
                 <h3>Personuppgifter</h3>
@@ -370,11 +347,9 @@ function getAllGroupMembers() {
                 <input type="text" placeholder="vårdnashavare" v-model="studentGuardian">
                 <input type="text" placeholder="vårdnashavare personnummer" v-model="studentGuardianID">
                 <h3>Skoluppgifter</h3>
-                <select name="klass">
-                    <option value="default" disabled selected hidden> Välj Klass</option>
+                <select name="klass" v-model="studentGroup">
                     <option v-for="group in props.groups" :value="group.name">{{ group.name }}</option>
                 </select>
-                <input type="text" placeholder="Klass" v-model="studentGroup">
                 <button @click="tagCount++">Add Tag</button>
                 <button @click="DecrimentTagCount">Remove Tag</button>
                 <h3>Administration</h3>
@@ -409,23 +384,27 @@ function getAllGroupMembers() {
             </select>
         </div>
     </div>
-
-    <div id="input-group">
+    <div class="columnautoflow" v-if="adminStore.selected === 'group'">
         <div>
-            <input id="group-name" type="text" placeholder="Group Name">
+            <input v-model="groupName" type="text" placeholder="Group Name">
             <button @click="studentCount++">Add Student</button>
             <button @click="DecrimentStudentCount">Remove Student</button>
         </div>
         <div class="bunch-of-stuff">
-            <select v-for="n in studentCount" class="group-list-students">
-                <option v-for="student in props.students" :value="student._id">{{ student.name }}</option>
+            <select v-for="n in studentCount" v-model="groupList[n - 1]">
+                <option v-for="student in props.students" :value="student">{{ student.name }}</option>
             </select>
         </div>
     </div>
-    <div id="input-classroom"><input id="classroom-name" type="text" placeholder="Location's Name"></div>
-    <div id="input-subject"> <input id="subject-name" type="text" placeholder="Subject's Name"> </div>
-    <div id="input-tag"> <input id="tag-name" type="text" placeholder="Tag's Name"> </div>
-
+    <div v-if="adminStore.selected === 'classroom'">
+        <input v-model="classroomName" type="text" placeholder="Location's Name">
+    </div>
+    <div v-if="adminStore.selected === 'subject'">
+        <input v-model="subjectName" type="text" placeholder="Subject's Name">
+    </div>
+    <div v-if="adminStore.selected === 'tag'">
+        <input v-model="tagName" type="text" placeholder="Tag's Name">
+    </div>
     <p>
         <button id="btn" @click="PutRequest">Create</button>
         <span id="status-message">{{ responseMessage }}</span>
@@ -466,6 +445,11 @@ h3 {
     overflow-y: auto;
 }
 
+.columnautoflow{
+    display: grid;
+    grid-auto-flow: column;
+}
+
 #status-message {
     display: inline-block;
     text-align: center;
@@ -491,27 +475,5 @@ h3 {
     border-radius: 10px;
     background-color: rgb(160, 200, 180);
     font-size: smaller;
-}
-
-#input-student {
-    display: none;
-    grid-auto-flow: column;
-}
-
-#input-group {
-    display: none;
-    grid-auto-flow: column;
-}
-
-#input-classroom {
-    display: none;
-}
-
-#input-subject {
-    display: none;
-}
-
-#input-tag {
-    display: none;
 }
 </style>

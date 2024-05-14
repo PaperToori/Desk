@@ -22,7 +22,7 @@ export const useAdminStore =
     defineStore({
         id: 'AdminStore',
         state: () => ({
-            selected: 'teacher',
+            selected: '',
             edit: false,
             editTarget: { value: false },
             targetType: ''
