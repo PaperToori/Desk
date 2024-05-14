@@ -296,7 +296,6 @@ function GetGroupMembersInfo() {
             name: member.name
         });
     });
-    console.log(selectedStudents);
     return selectedStudents;
 }
 
