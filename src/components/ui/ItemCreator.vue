@@ -54,9 +54,6 @@ let tagName = ref('');
 
 watch(() => adminStore.selected, () => {
     // Reset text boxes and status display
-    document.getElementById('teacher-name').value = '';
-    document.getElementById('teacher-gmail').value = '';
-    document.getElementById('teacher-phonenumber').value = '';
     classroomName.value = '';
     subjectName.value = '';
     tagName.value = '';
@@ -64,19 +61,6 @@ watch(() => adminStore.selected, () => {
     responseMessage.value = 'No Status';
     tagCount.value = 0;
     studentCount.value = 0;
-    // Hide all options
-    document.getElementById('input-teacher').style.display = 'none';
-    document.getElementById('input-student').style.display = 'none';
-    document.getElementById('input-group').style.display = 'none';
-
-    // Display the selected option
-    if (adminStore.selected === 'teacher') {
-        document.getElementById('input-teacher').style.display = 'inline';
-    } else if (adminStore.selected === 'student') {
-        document.getElementById('input-student').style.display = 'grid';
-    } else if (adminStore.selected === 'group') {
-        document.getElementById('input-group').style.display = 'grid';
-    }
 });
 
 async function PutRequestGuardian() {
@@ -319,12 +303,12 @@ function GetGroupMembersInfo() {
 </script>
 
 <template>
-    <div id="input-teacher">
+    <div v-if="adminStore.selected === 'teacher'">
         <input id="teacher-name" type="text" placeholder="Full Name">
         <input id="teacher-gmail" type="text" placeholder="Gmail">
         <input id="teacher-phonenumber" type="tel" inputmode="numeric" placeholder="Phone Number">
     </div>
-    <div id="input-student">
+    <div class="columnautoflow" v-if="adminStore.selected === 'student'">
         <div>
             <div>
                 <h3>Personuppgifter</h3>
@@ -375,7 +359,7 @@ function GetGroupMembersInfo() {
             </select>
         </div>
     </div>
-    <div id="input-group">
+    <div class="columnautoflow" v-if="adminStore.selected === 'group'">
         <div>
             <input v-model="groupName" type="text" placeholder="Group Name">
             <button @click="studentCount++">Add Student</button>
@@ -436,6 +420,11 @@ h3 {
     overflow-y: auto;
 }
 
+.columnautoflow{
+    display: grid;
+    grid-auto-flow: column;
+}
+
 #status-message {
     display: inline-block;
     text-align: center;
@@ -461,15 +450,5 @@ h3 {
     border-radius: 10px;
     background-color: rgb(160, 200, 180);
     font-size: smaller;
-}
-
-#input-student {
-    display: none;
-    grid-auto-flow: column;
-}
-
-#input-group {
-    display: none;
-    grid-auto-flow: column;
 }
 </style>
