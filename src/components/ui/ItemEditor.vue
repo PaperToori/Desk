@@ -1,6 +1,9 @@
 <script setup>
 import { useAdminStore, useAuthStore } from '@/stores/store';
 import { watch, ref } from 'vue';
+import GroupMembers from './GroupMembers.vue';
+
+const props = defineProps({ students: Array });
 
 let Auth = useAuthStore();
 let adminStore = useAdminStore();
@@ -10,17 +13,17 @@ watch(() => adminStore.selected, () => {
 });
 watch(() => adminStore.editTarget, () => {
     newSocialSecurityNumber.value = adminStore.editTarget.socialSecurityNumber;
-    newName.value = adminStore.editTarget.name;
-    newEmail.value = adminStore.editTarget.email;
-    newPhoneNumber.value = adminStore.editTarget.phoneNumber;
-    newGroup.value = adminStore.editTarget.group;
-    newAdress.value = adminStore.editTarget.adress;
-    newZip.value = adminStore.editTarget.zip;
-    newCity.value = adminStore.editTarget.city;
-    newTags.value = adminStore.editTarget.tags;             // ARRAY
-    newGuardian.value = adminStore.editTarget.guardian;     // ARRAY
-    newChild.value = adminStore.editTarget.child;           // ARRAY
-    newMembers.value = adminStore.editTarget.members;       // ARRAY
+    newName.value                 = adminStore.editTarget.name;
+    newEmail.value                = adminStore.editTarget.email;
+    newPhoneNumber.value          = adminStore.editTarget.phoneNumber;
+    newGroup.value                = adminStore.editTarget.group;
+    newAdress.value               = adminStore.editTarget.adress;
+    newZip.value                  = adminStore.editTarget.zip;
+    newCity.value                 = adminStore.editTarget.city;
+    newTags.value                 = adminStore.editTarget.tags;             // ARRAY
+    newGuardian.value             = adminStore.editTarget.guardian;     // ARRAY
+    newChild.value                = adminStore.editTarget.child;           // ARRAY
+    newMembers.value              = adminStore.editTarget.members;       // ARRAY
 });
 
 let newSocialSecurityNumber = ref(adminStore.editTarget.socialSecurityNumber);
@@ -36,6 +39,7 @@ let newGuardian             = ref(adminStore.editTarget.guardian);  // ARRAY
 let newChild                = ref(adminStore.editTarget.child);     // ARRAY
 let newMembers              = ref(adminStore.editTarget.members);   // ARRAY
 
+let editingMember = ref(false);
 
 async function PatchRequest() {
     let url;
@@ -70,7 +74,7 @@ async function PatchRequest() {
             response = await fetch(url, {
                 method: "PATCH",
                 headers: headersList,
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     newName: newName.value,
                     target: adminStore.editTarget.name
                 })
@@ -84,9 +88,9 @@ async function PatchRequest() {
             response = await fetch(url, {
                 method: "PATCH",
                 headers: headersList,
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     newName: newName.value,
-                    target: adminStore.editTarget.name 
+                    target: adminStore.editTarget.name
                 })
             });
         }
@@ -104,19 +108,27 @@ async function PatchRequest() {
         more to come when the pull arrives
     </div>
     <div class="boxedit" v-if="adminStore.targetType === 'student'">
-        <input type="text" v-model="newSocialSecurityNumber">
-        <input type="text" v-model="newName">
-        <input type="text" v-model="newEmail">
-        <input type="text" v-model="newPhoneNumber">
-        <input type="text" v-model="newGroup">
-        <input type="text" v-model="newAdress">
-        <input type="text" v-model="newZip">
-        <input type="text" v-model="newCity">
+        <div>
+            <input type="text" v-model="newSocialSecurityNumber">
+            <input type="text" v-model="newName">
+            <input type="text" v-model="newEmail">
+            <input type="text" v-model="newPhoneNumber">
+            <input type="text" v-model="newGroup">
+            <input type="text" v-model="newAdress">
+            <input type="text" v-model="newZip">
+            <input type="text" v-model="newCity">
+        </div>
         code to add/remove guardians & tags
     </div>
     <div class="boxedit" v-if="adminStore.targetType === 'group'">
-        <input type="text" v-model="newName">
-        Code to add/remove members
+        <div>
+            <input type="text" v-model="newName">
+        </div>
+        <div >
+          <GroupMembers
+          :newMembers="newMembers"
+          :students="props.students"/>
+        </div>
     </div>
     <div v-if="adminStore.targetType === 'classroom'">
         <input type="text" v-model="newName">
@@ -159,9 +171,9 @@ button {
     overflow-y: auto;
 }
 
-.box-edit {
-    display: inline;
-    grid-column: 1fr 1fr;
+.boxedit {
+    display: grid;
+    grid-auto-flow: column;
     height: 100%;
 }
 

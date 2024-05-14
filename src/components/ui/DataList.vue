@@ -1,5 +1,4 @@
 <script setup>
-import { watch } from 'vue';
 import { useAdminStore } from '@/stores/store';
 import DataLine from './DataLine.vue';
 
