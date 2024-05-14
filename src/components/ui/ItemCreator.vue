@@ -12,6 +12,15 @@ let smallResponseMessage = ref('No Status');
 let tagCount = ref(0);
 let studentCount = ref(0);
 
+let teacherName = ref();
+let teacherSocialSecurityNumber = ref();
+let teacherEmail = ref();
+let teacherPhoneNumber = ref();
+let teacherAdress = ref();
+let teacherZip = ref();
+let teacherCity = ref();
+let teacherCourse = ref();
+let teacherTempPassword = ref();
 
 let studentGuardianExists = ref(true);
 let studentName = ref();
@@ -103,7 +112,7 @@ async function PutRequestGuardian() {
                 city: guardianCity.value,
                 child: guardianChild.value,
                 childID: guardianChildID.value,
-                tempPassword: tempPassword.value,
+                tempPassword: guardianTempPassword.value,
             })
         });
     } catch (error) {
@@ -112,7 +121,7 @@ async function PutRequestGuardian() {
 
     smallResponseMessage.value = await response.text();
     if (response.status === 200) {
-        studentGuardianExists.value="true";
+        studentGuardianExists.value = "true";
         document.getElementById('small-status-message').style.backgroundColor = "rgb(100, 180, 100)";
     } else { document.getElementById('small-status-message').style.backgroundColor = "rgb(210, 110, 110)"; }
 }
@@ -154,19 +163,27 @@ async function PutRequest() {
 
     // /// Create new Teacher
     if (adminStore.selected === 'teacher') {
-        // Init values for ease of use
-        let teacherName = document.getElementById('teacher-name').value;
-        let teacherGmail = document.getElementById('teacher-gmail').value;
-        let teacherPhoneNumber = document.getElementById('teacher-phonenumber').value;
-
+        let id = "undefined";
+        if (Auth.auth.currentUser) {
+            id = await Auth.auth.currentUser.getIdToken(true);
+        }
+        let headersList = {
+            "id": id
+        }
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/teachers/", {
                 method: "POST",
+                headers: headersList,
                 body: JSON.stringify({
-                    name: teacherName,
-                    gmail: teacherGmail,
-                    phoneNumber: teacherPhoneNumber
+                    name: teacherName.value,
+                    email: teacherEmail.value,
+                    phoneNumber: teacherPhoneNumber.value,
+                    socialSecurityNumber: teacherSocialSecurityNumber.value,
+                    adress: teacherAdress.value,
+                    zip: teacherZip.value,
+                    city: teacherCity.value,
+                    tempPassword: teacherTempPassword.value,
                 })
             });
         } catch (error) {
@@ -213,7 +230,7 @@ async function PutRequest() {
                         city: studentCity.value,
                         guardian: studentGuardian.value,
                         guardianID: studentGuardianID.value,
-                        tempPassword: guardianTempPassword.value,
+                        tempPassword: tempPassword.value,
                         group: studentGroup.value,
                     })
                 });
@@ -314,8 +331,8 @@ function getAllGroupMembers() {
     let memberSelectors = document.querySelectorAll(".group-list-students");
     Array.from(memberSelectors).forEach((memberSelector) => {
         selectedStudents.push({
-            id : memberSelector.value,
-            name : memberSelector.innerHTML
+            id: memberSelector.value,
+            name: memberSelector.innerHTML
         });
     });
     console.log(selectedStudents);
@@ -326,9 +343,18 @@ function getAllGroupMembers() {
 
 <template>
     <div id="input-teacher">
-        <input id="teacher-name" type="text" placeholder="Full Name">
-        <input id="teacher-gmail" type="text" placeholder="Gmail">
-        <input id="teacher-phonenumber" type="tel" inputmode="numeric" placeholder="Phone Number">
+        <div>
+            <h3>Personuppgifter</h3>
+            <input type="text" placeholder="Förnamn Efternamn" v-model="teacherName">
+            <input type="text" placeholder="Personnummer YYYYMMDD-XXXX" v-model="teacherSocialSecurityNumber">
+            <input type="text" placeholder="Email" v-model="teacherEmail">
+            <input type="tel" placeholder="Telefonnummer" v-model="teacherPhoneNumber">
+            <input type="text" placeholder="Adress" v-model="teacherAdress">
+            <input type="text" placeholder="postkod" v-model="teacherZip">
+            <input type="text" placeholder="Stad" v-model="teacherCity">
+            <h3>Administration</h3>
+            <input type="password" placeholder="temporärt lösenord" v-model="teacherTempPassword">
+        </div>
     </div>
     <div id="input-student">
         <div>
