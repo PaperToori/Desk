@@ -21,7 +21,6 @@ onBeforeMount(async () => {
         let id = "undefined";
         if (Auth.auth.currentUser) {
             id = await Auth.auth.currentUser.getIdToken(true);
-            console.log(id);
         }
         let headersList = {
             "id": id
