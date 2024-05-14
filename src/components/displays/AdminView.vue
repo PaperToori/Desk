@@ -70,7 +70,7 @@ onBeforeMount(async () => {
             :subjects="subjects" :tags="tags" />
     </div>
     <div class="itemaspect" v-if="adminStore.edit === true">
-        <ItemEditor />
+        <ItemEditor :students="students" />
     </div>
     <div class="itemaspect">
         <ItemCreator :tags="tags" :students="students" :groups="groups" />
