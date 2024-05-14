@@ -203,8 +203,12 @@ function getAllGroupMembers() {
     let selectedStudents = [];
     let memberSelectors = document.querySelectorAll(".group-list-students");
     Array.from(memberSelectors).forEach((memberSelector) => {
-        selectedStudents.push(memberSelector.value);
+        selectedStudents.push({
+            id : memberSelector.value,
+            name : memberSelector.innerHTML
+        });
     });
+    console.log(selectedStudents);
     return selectedStudents;
 }
 
@@ -232,7 +236,6 @@ function getAllGroupMembers() {
                 <option value="default" disabled selected hidden> Välj Klass</option>
                 <option v-for="group in props.groups" :value="group.name">{{ group.name }}</option>
             </select>
-            <input type="text" placeholder="Klass" v-model="studentGroup">
             <button @click="tagCount++">Add Tag</button>
             <button @click="DecrimentTagCount">Remove Tag</button>
             <h3>Administration</h3>
@@ -253,7 +256,7 @@ function getAllGroupMembers() {
         </div>
         <div class="bunch-of-stuff">
             <select v-for="n in studentCount" class="group-list-students">
-                <option v-for="student in props.students" :value="student.name">{{ student.name }}</option>
+                <option v-for="student in props.students" :value="student._id">{{ student.name }}</option>
             </select>
         </div>
     </div>
