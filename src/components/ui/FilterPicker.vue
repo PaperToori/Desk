@@ -1,12 +1,25 @@
 <script setup>
 import { ref, computed, onBeforeMount, watch } from 'vue';
+import { useAuthStore } from '@/stores/store'
 
+// Pinia Stores
+const Auth = useAuthStore();
+Auth.Inject();
+
+
+let id = "undefined";
+if (Auth.auth.currentUser) {
+    id = await Auth.auth.currentUser.getIdToken(true);
+}
+let headersList = {
+    "id": id,
+}
 let currentSelection = ref("");
 
 let props = defineProps(['filter', 'eyes']);
 
 
-watch(() => props.eyes, (newVal, oldVal) => { 
+watch(() => props.eyes, (newVal, oldVal) => {
     document.getElementById('filterBox').value = 'default';
 });
 
@@ -24,6 +37,7 @@ onBeforeMount(async () => {
     try {
         let response = await fetch("http://localhost:8080/groups/", {
             method: "GET",
+            headers: headersList,
         });
         groups.value = await response.json();
     } catch (error) {
@@ -32,6 +46,7 @@ onBeforeMount(async () => {
     try {
         let response = await fetch("http://localhost:8080/teachers/", {
             method: "GET",
+            headers: headersList,
         });
         teachers.value = await response.json();
     } catch (error) {
@@ -40,6 +55,7 @@ onBeforeMount(async () => {
     try {
         let response = await fetch("http://localhost:8080/classrooms/", {
             method: "GET",
+            headers: headersList,
         });
         classrooms.value = await response.json();
     } catch (error) {

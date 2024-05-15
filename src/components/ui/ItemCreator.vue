@@ -2,7 +2,7 @@
 import { watch, ref } from 'vue';
 import { useAdminStore, useAuthStore } from '@/stores/store';
 
-const props = defineProps({ tags: Array, students: Array, groups: Array });
+const props = defineProps({ tags: Array, teachers: Array, students: Array, groups: Array, subjects: Array, });
 
 // Pinia Stores
 const Auth = useAuthStore();
@@ -13,7 +13,7 @@ let adminStore = useAdminStore();
 let responseMessage = ref('No Status');
 let smallResponseMessage = ref('No Status');
 
-// Variables --> Teacher (currently none)
+// Variables --> Teacher 
 let teacherName = ref();
 let teacherSocialSecurityNumber = ref();
 let teacherEmail = ref();
@@ -55,6 +55,12 @@ let guardianTempPassword = ref();
 let groupName = ref('');
 let groupList = ref([]);
 let studentCount = ref(0);
+
+// Variables --> Course
+let courseName = ref();
+let courseSubject = ref();
+let courseGroup = ref();
+let courseTeacher = ref();
 
 // Variables --> Classroom, Subject, and Tag
 let classroomName = ref('');
@@ -287,6 +293,31 @@ async function PutRequest() {
             console.log(error.message);
         }
     }
+    // /// Create new Course
+    else if (adminStore.selected === 'course') {
+        let id = "undefined";
+        if (Auth.auth.currentUser) {
+            id = await Auth.auth.currentUser.getIdToken(true);
+        }
+        let headersList = {
+            "id": id
+        }
+        // Attempt POST request
+        try {
+            response = await fetch("http://localhost:8080/course/", {
+                method: "POST",
+                headers: headersList,
+                body: JSON.stringify({
+                    name: courseName.value,
+                    group: courseGroup.value,
+                    subject: courseSubject.value,
+                    teacher: courseTeacher.value,
+                })
+            });
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
     responseMessage.value = await response.text();
     if (response.status === 200) {
         document.getElementById('status-message').style.backgroundColor = "rgb(100, 180, 100)";
@@ -405,6 +436,30 @@ function GetGroupMembersInfo() {
     <div v-if="adminStore.selected === 'tag'">
         <input v-model="tagName" type="text" placeholder="Tag's Name">
     </div>
+    <div class="columnautoflow" v-if="adminStore.selected === 'course'">
+        <div>
+            <input v-model="courseName" type="text" placeholder="Kurs namn">
+            <p>
+                Klass: {{ courseGroup }}
+                <select name="klass" v-model="courseGroup">
+                    <option v-for="group in props.groups" :value="group.name">{{ group.name }}</option>
+                </select>
+            </p>
+            <p>
+                Ämne: {{ courseSubject }}
+                <select name="ämne" v-model="courseSubject">
+                    <option v-for="subject in props.subjects" :value="subject.name">{{ subject.name }}</option>
+                </select>
+            </p>
+            <p>
+                Lärare: {{ courseTeacher }}
+                <select name="Lärare" v-model="courseTeacher">
+                    <option v-for="teacher in props.teachers" :value="teacher._id">{{ teacher.name }}</option>
+                </select>
+            </p>
+            <button id="btn" @click="courseName = `${courseSubject} ${courseGroup}`">generera namn</button>
+        </div>
+    </div>
     <p>
         <button id="btn" @click="PutRequest">Create</button>
         <span id="status-message">{{ responseMessage }}</span>
@@ -445,7 +500,7 @@ h3 {
     overflow-y: auto;
 }
 
-.columnautoflow{
+.columnautoflow {
     display: grid;
     grid-auto-flow: column;
 }

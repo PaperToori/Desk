@@ -8,7 +8,8 @@ const props = defineProps({
     groups    : Array,
     classrooms: Array,
     subjects  : Array,
-    tags      : Array
+    tags      : Array,
+    courses   : Array
 })
 
 let adminStore = useAdminStore();
@@ -49,6 +50,11 @@ let adminStore = useAdminStore();
     <div v-if="adminStore.selected==='tag'" class="rowler">
         <div v-for="tag in tags">
             <DataLine type="tag" :target="tag" />
+        </div>
+    </div>
+    <div v-if="adminStore.selected==='course'" class="rowler">
+        <div v-for="course in courses">
+            <DataLine type="course" :target="course" />
         </div>
     </div>
 
