@@ -2,7 +2,20 @@
 import { computed, onBeforeMount } from 'vue';
 import { ref } from 'vue'
 import ALesson from '../ui/ALesson.vue';
-import { useFilterStore } from '@/stores/store'
+import {  useAuthStore, useFilterStore } from '@/stores/store'
+
+// Pinia Stores
+const Auth = useAuthStore();
+Auth.Inject();
+
+
+let id = "undefined";
+if (Auth.auth.currentUser) {
+    id = await Auth.auth.currentUser.getIdToken(true);
+}
+let headersList = {
+    "id": id,
+}
 
 const filterStore = useFilterStore();
 
@@ -38,6 +51,7 @@ onBeforeMount(async () => {
     try {
         let response = await fetch("http://localhost:8080/lessons/", {
             method: "GET",
+            headers: headersList,
         });
         fetchedLessons = await response.json();
     } catch (error) {
