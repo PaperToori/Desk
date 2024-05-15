@@ -1,7 +1,19 @@
 <script setup>
-import { useAdminStore } from '@/stores/store';
+import {  useAuthStore, useAdminStore } from '@/stores/store';
+
+// Pinia Stores
+const Auth = useAuthStore();
+Auth.Inject();
 
 let adminStore = useAdminStore();
+
+let id = "undefined";
+if (Auth.auth.currentUser) {
+    id = await Auth.auth.currentUser.getIdToken(true);
+}
+let headersList = {
+    "id": id,
+}
 
 let props = defineProps({
     type: String,
@@ -13,6 +25,7 @@ async function DeleteTeacher() { // Doesn't work yet
         let url = "http://localhost:8080/teachers/";
         let response = await fetch(url, {
             method: "DELETE",
+            headers: headersList,
             body: JSON.stringify({})
         });
         console.log(await response.text());
@@ -26,6 +39,7 @@ async function DeleteStudent() { // Doesn't work yet
         let url = "http://localhost:8080/students/";
         let response = await fetch(url, {
             method: "DELETE",
+            headers: headersList,
             body: JSON.stringify({})
         });
         console.log(await response.text());
@@ -39,6 +53,7 @@ async function DeleteGroup() {
         let url = "http://localhost:8080/groups/";
         let response = await fetch(url, {
             method: "DELETE",
+            headers: headersList,
             body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.text());
@@ -52,6 +67,7 @@ async function DeleteClassroom() {
         let url = "http://localhost:8080/classrooms/";
         let response = await fetch(url, {
             method: "DELETE",
+            headers: headersList,
             body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.text());
@@ -65,6 +81,7 @@ async function DeleteSubject() {
         let url = "http://localhost:8080/subjects/";
         let response = await fetch(url, {
             method: "DELETE",
+            headers: headersList,
             body: JSON.stringify({ name: props.target.name })
         });
         console.log(await response.text());
@@ -78,9 +95,23 @@ async function DeleteTag() {
         let url = "http://localhost:8080/tags/";
         let response = await fetch(url, {
             method: "DELETE",
+            headers: headersList,
             body: JSON.stringify({ name: props.target.name })
         });
-        console.log(await response.test());
+        console.log(await response.text());
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+async function DeleteCourse() {
+    try {
+        let url = "http://localhost:8080/course/";
+        let response = await fetch(url, {
+            method: "DELETE",
+            headers: headersList,
+            body: JSON.stringify({ name: props.target.name })
+        });
+        console.log(await response.text());
     } catch (error) {
         console.log(error.message);
     }
@@ -141,9 +172,15 @@ function EditObject() {
             <button @click="DeleteTag" class="inline-button">Delete</button>
         </div>
     </div>
+    <div class="items" v-else-if="props.type === 'course'" id="item-course">
+        <span> {{ props.target.name }} </span>
+        <div class="button-container">
+            <button @click="EditObject" class="inline-button">Edit</button>
+            <button @click="DeleteCourse" class="inline-button">Delete</button>
+        </div>
+    </div>
 </template>
 <style scoped>
-
 .items {
     display: grid;
     width: 95%;

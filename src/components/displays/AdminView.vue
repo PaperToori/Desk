@@ -15,6 +15,8 @@ let groups = ref([]);
 let classrooms = ref([]);
 let subjects = ref([]);
 let tags = ref([]);
+let courses = ref([]);
+
 
 onBeforeMount(async () => {
     try {
@@ -50,6 +52,10 @@ onBeforeMount(async () => {
             method: "GET",
             headers: headersList
         });
+        let courseResponse = await fetch("http://localhost:8080/course/", {
+            method: "GET",
+            headers: headersList
+        });
         // Input into local variables
         teachers.value = await teacherResponse.json();
         students.value = await studentResponse.json();
@@ -57,6 +63,8 @@ onBeforeMount(async () => {
         classrooms.value = await classroomResponse.json();
         subjects.value = await subjectResponse.json();
         tags.value = await tagResponse.json();
+        courses.value = await courseResponse.json();
+
     } catch (error) {
         console.log(error.message);
     }
@@ -66,13 +74,13 @@ onBeforeMount(async () => {
 <template>
     <div class="datalist">
         <DataList :teachers="teachers" :students="students" :groups="groups" :classrooms="classrooms"
-            :subjects="subjects" :tags="tags" />
+            :subjects="subjects" :tags="tags" :courses="courses"/>
     </div>
     <div class="itemaspect" v-if="adminStore.edit === true">
         <ItemEditor :students="students" />
     </div>
     <div class="itemaspect">
-        <ItemCreator :tags="tags" :students="students" :groups="groups" />
+        <ItemCreator :tags="tags" :teachers="teachers" :students="students" :groups="groups" :subjects="subjects"/>
     </div>
 </template>
 

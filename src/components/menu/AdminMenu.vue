@@ -32,6 +32,10 @@ let selectedSchema = ref('');
                     <input type="radio" v-model="selectedSchema" value="tag" name="selectSchema">
                     Etikett
             </label> </p>
+            <p> <label>
+                    <input type="radio" v-model="selectedSchema" value="course" name="selectSchema">
+                    Kurs
+            </label> </p>
         </div>
 </template>
 <style scoped>
