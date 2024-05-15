@@ -51,7 +51,22 @@ async function PatchRequest() {
     }
     if (adminStore.selected === 'teacher') { }
     else if (adminStore.selected === 'student') { }
-    else if (adminStore.selected === 'group') { }
+    else if (adminStore.selected === 'group') {
+        try {
+            url = "http://localhost:8080/groups/";
+            response = await fetch(url, {
+                method: "PATCH",
+                headers: headersList,
+                // body: JSON.stringify({
+                //     targetId: adminStore.editTarget._id,
+                //     newName: newName.value,
+                //     newMembers : newMembers.value
+                // })
+            });
+            console.log(await response.text());
+        } catch (error) { console.log(error.message); }
+        console.log("fetch sent");
+    }
     else if (adminStore.selected === 'classroom') {
         try {
             url = "http://localhost:8080/classrooms/";
@@ -99,14 +114,21 @@ async function PatchRequest() {
     }
 }
 
-function UpdateNewMembers(removal, member){
-    if (removal){
-        // splice member out of array
+function UpdateNewMembers(removal, member) {
+    let exists = false;
+    // Remove student from group array
+    if (removal) {
+        for (let i = 0; i < newMembers.value.length; i++) {
+            if (newMembers.value[i].id === member.id) { newMembers.value.splice(i, 1); }
+        }
         return;
     }
-    console.log(newMembers.value);
-    newMembers.value.push({ name : member.name, id : member._id });
-    console.log(newMembers.value);
+    // Check if student already exists in group array. If not, add them.
+    newMembers.value.forEach((mem) => {
+        if (mem.id === member._id) { exists = true; }
+    });
+    if (exists) { return; }
+    newMembers.value.push({ name: member.name, id: member._id });
 }
 
 </script>
@@ -132,11 +154,11 @@ function UpdateNewMembers(removal, member){
         <div>
             <input type="text" v-model="newName">
         </div>
-        <div >
-          <GroupMembers
-          :newMembers="newMembers"
-          :students="props.students"
-          @updatenewmembers="UpdateNewMembers"/>
+        <div>
+            <GroupMembers 
+            :newMembers="newMembers" 
+            :students="props.students" 
+            @updatenewmembers="UpdateNewMembers"/>
         </div>
     </div>
     <div v-if="adminStore.targetType === 'classroom'">
