@@ -39,8 +39,6 @@ let newGuardian             = ref(adminStore.editTarget.guardian);  // ARRAY
 let newChild                = ref(adminStore.editTarget.child);     // ARRAY
 let newMembers              = ref(adminStore.editTarget.members);   // ARRAY
 
-let editingMember = ref(false);
-
 async function PatchRequest() {
     let url;
     let response;
@@ -101,6 +99,16 @@ async function PatchRequest() {
     }
 }
 
+function UpdateNewMembers(removal, member){
+    if (removal){
+        // splice member out of array
+        return;
+    }
+    console.log(newMembers.value);
+    newMembers.value.push({ name : member.name, id : member._id });
+    console.log(newMembers.value);
+}
+
 </script>
 <template>
     <div class="boxedit" v-if="adminStore.targetType === 'teacher'">
@@ -127,7 +135,8 @@ async function PatchRequest() {
         <div >
           <GroupMembers
           :newMembers="newMembers"
-          :students="props.students"/>
+          :students="props.students"
+          @updatenewmembers="UpdateNewMembers"/>
         </div>
     </div>
     <div v-if="adminStore.targetType === 'classroom'">
