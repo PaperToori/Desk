@@ -130,8 +130,8 @@ function EditObject() {
         <span> {{ props.target.email }} </span>
         <span> {{ props.target.phoneNumber }} </span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteTeacher" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteTeacher" class="inline-button">Delete</v-btn>
         </div>
     </div>
     <div class="items" v-else-if="props.type === 'student'" id="item-student">
@@ -139,44 +139,44 @@ function EditObject() {
         <span> {{ props.target.email }} </span>
         <span> {{ props.target.phoneNumber }} </span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteStudent" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteStudent" class="inline-button">Delete</v-btn>
         </div>
     </div>
     <div class="items" v-else-if="props.type === 'group'" id="item-group">
         <span> {{ props.target.name }} </span>
         <span> {{ props.target.members.length }} Member(s)</span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteGroup" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteGroup" class="inline-button">Delete</v-btn>
         </div>
     </div>
     <div class="items" v-else-if="props.type === 'classroom'" id="item-classroom">
         <span> {{ props.target.name }} </span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteClassroom" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteClassroom" class="inline-button">Delete</v-btn>
         </div>
     </div>
     <div class="items" v-else-if="props.type === 'subject'" id="item-subject">
         <span> {{ props.target.name }} </span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteSubject" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteSubject" class="inline-button">Delete</v-btn>
         </div>
     </div>
     <div class="items" v-else-if="props.type === 'tag'" id="item-tag">
         <span> {{ props.target.name }} </span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteTag" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteTag" class="inline-button">Delete</v-btn>
         </div>
     </div>
     <div class="items" v-else-if="props.type === 'course'" id="item-course">
         <span> {{ props.target.name }} </span>
         <div class="button-container">
-            <button @click="EditObject" class="inline-button">Edit</button>
-            <button @click="DeleteCourse" class="inline-button">Delete</button>
+            <v-btn @click="EditObject" class="inline-button">Edit</v-btn>
+            <v-btn @click="DeleteCourse" class="inline-button">Delete</v-btn>
         </div>
     </div>
 </template>
@@ -194,12 +194,12 @@ function EditObject() {
     justify-self: right;
 }
 
-.inline-button {
+/* .inline-button {
     width: 50px;
-}
+} */
 
 #item-teacher {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 4fr 4fr 4fr 3fr;
 }
 
 #item-student {

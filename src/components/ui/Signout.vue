@@ -39,7 +39,7 @@ async function signout() {
     <div v-if="profile">
         <a href="/#/profile">{{ profile.displayName }}</a>
 
-        <button @click="signout">Logga Ut</button>
+        <v-btn @click="signout">Logga Ut</v-btn>
     </div>
     <a href="/#/profile" v-else>logga in</a>
 </template>

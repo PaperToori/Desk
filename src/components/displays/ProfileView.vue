@@ -3,6 +3,7 @@ import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/store';
 import { signInWithEmailAndPassword, signInWithPopup, linkWithPopup, GoogleAuthProvider } from 'firebase/auth';
 
+
 const provider = new GoogleAuthProvider();
 
 const Auth = useAuthStore();
@@ -137,47 +138,72 @@ async function loginGooglePopup() {
         <p>profile: {{ profile }}</p>
         <input type="email" placeholder="example@email.com" v-model="email">
         <input type="password" placeholder="password" v-model="password">
-        <button type="submit" @click="login">login</button>
+        <v-btn type="submit" @click="login">login</v-btn>
         <br>
-        <button @click="loginGooglePopup">logga in med Google</button>
+        <v-btn @click="loginGooglePopup">logga in med Google</v-btn>
     </div>
     <div v-else>
-        <button @click="linkGooglePopup">länka Google med konto</button>
+        <v-btn @click="linkGooglePopup">länka Google med konto</v-btn>
         <div v-if="profile.profileType.length > 1">
             profil
-            <button @click="profileSelector = 0">{{ profile.profileType[0] }}</button>
-            <button @click="profileSelector = 1">{{ profile.profileType[1] }}</button>
-            <button @click="profileSelector = 2" v-if="profile.profileType.length > 2">{{ profile.profileType[2]
-                }}</button>
+            <v-btn @click="profileSelector = 0">{{ profile.profileType[0] }}</v-btn>
+            <v-btn @click="profileSelector = 1">{{ profile.profileType[1] }}</v-btn>
+            <v-btn @click="profileSelector = 2" v-if="profile.profileType.length > 2">{{ profile.profileType[2]
+                }}</v-btn>
         </div>
-        <p>profile: {{ profile.profile[profileSelector].name }}</p>
-        <form>
-            <label>
-                Namn: <input type="text" v-model="profile.profile[profileSelector].name">
-            </label>
-            <label>
-                person nummer: <input type="text" Placeholder="YYYYMMDD-XXXX"
-                    v-model="profile.profile[profileSelector].socialSecurityNumber">
-            </label>
-            <label>
-                email: <input type="text" v-model="profile.profile[profileSelector].email">
-            </label>
-            <label>
-                telefon nummer: <input type="text" v-model="profile.profile[profileSelector].phoneNumber">
-            </label>
-            <label>
-                klass: <input type="" v-model="profile.profile[profileSelector].group" c>
-            </label>
-            <label>
-                adress: <input type="text" v-model="profile.profile[profileSelector].adress" readonly>
-            </label>
-            <label>
-                postkod: <input type="text" v-model="profile.profile[profileSelector].zip">
-            </label>
-            <label>
-                Vårdnashavare: <input type="text" v-model="profile.profile[profileSelector].guardian">
-            </label>
-        </form>
-        <button @click="submitForm">Spara ändringar</button>
+        <v-form>
+            <v-container>
+                <v-row>
+                    <v-col cols="12" md="4">
+                        <v-text-field readonly v-model="profile.profile[profileSelector].name"
+                            label="Namn"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                        <v-text-field readonly v-model="profile.profile[profileSelector].socialSecurityNumber"
+                            Placeholder="YYYYMMDD-XXXX" label="person nummer"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                        <v-text-field v-model="profile.profile[profileSelector].email" label=" email"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                        <v-text-field v-model="profile.profile[profileSelector].phoneNumber"
+                            label="telefon nummer"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                        <v-text-field readonly v-model="profile.profile[profileSelector].group"
+                            label="klass"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                        <v-text-field readonly v-model="profile.profile[profileSelector].adress"
+                            label="adress"></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" md="4">
+                        <v-text-field readonly v-model="profile.profile[profileSelector].zip"
+                            label="postkod"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-text-field readonly v-model="profile.profile[profileSelector].guardian"
+                            label="Vårdnashavare"></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-container>
+            <div v-if="profile.profileType[profileSelector] === 'Elev'">
+                <p>Elev</p>
+            </div>
+            <div v-else-if="profile.profileType[profileSelector] === 'Vårdnashavare'">
+                <p>Vårdnashavare</p>
+            </div>
+            <div v-else-if="profile.profileType[profileSelector] === 'Lärare'">
+                <p>Lärare</p>
+            </div>
+
+        </v-form>
+        <v-btn @click="submitForm">Spara ändringar</v-btn>
     </div>
 </template>

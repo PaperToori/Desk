@@ -1,8 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 
 let currentPage = 'dashboard';
-
+let selecttion = ref('');
 const pages = [
     {
         value: "dashboard",
@@ -30,7 +31,6 @@ const router = useRouter();
 router.push('/');
 
 function updateRoute(e) {
-
     router.push(e.target.value);
 }
 
@@ -38,11 +38,16 @@ function updatePage(page) {
     router.push(page.url);
     currentPage = page.value;
 }
-
-
 </script>
 <template>
     <div class="container">
+        <!-- <v-select v-model="selection" density="compact" label="Compact" :items="[
+                'Dashboard',
+                'Admin',
+                'Schedule',
+                'Profile',
+            ]">
+        </v-select> -->
         <select v-on:click="updateRoute" name="" id="routeSelect">
             <option value="/">Dashboard</option>
             <option value="/admin">Admin</option>

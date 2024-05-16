@@ -102,18 +102,7 @@ async function authCheck() {
 }
 </script>
 <template>
-    <p>Sign in</p>
-    <input type="email" placeholder="example@email.com" v-model="email">
-    <input type="password" placeholder="password" v-model="password">
-    <button type="submit" @click="login">login</button>
-    <p>Sign up</p>
-    <input type="email" placeholder="example@email.com" v-model="email">
-    <input type="password" placeholder="password" v-model="password">
-    <input type="number" min="0" max="4" step="1" placeholder="permission level" v-model="permissions">
-    <button @click="signup">sign up</button>
-    <button id="authCheck" @click="authCheck">Check Authentication</button>
-    <p>{{ response }}</p>
-    <button @click="signout">signOut</button>
+    
 </template>
 <style scoped>
 button {
