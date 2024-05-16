@@ -157,15 +157,17 @@ async function PutRequest() {
 
     let response;
 
+    let id = "undefined";
+    if (Auth.auth.currentUser) {
+        id = await Auth.auth.currentUser.getIdToken(true);
+    }
+    let headersList = {
+        "id": id
+    }
+
     // /// Create new Teacher
     if (adminStore.selected === 'teacher') {
-        let id = "undefined";
-        if (Auth.auth.currentUser) {
-            id = await Auth.auth.currentUser.getIdToken(true);
-        }
-        let headersList = {
-            "id": id
-        }
+        
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/teachers/", {
@@ -190,11 +192,11 @@ async function PutRequest() {
     else if (adminStore.selected === 'student') {
         // Init values for ease of use
         let studentTags = [...getAllStudentTags()];
-        let id = "undefined";
+        id = "undefined";
         if (Auth.auth.currentUser) {
             id = await Auth.auth.currentUser.getIdToken(true);
         }
-        let headersList = {
+        headersList = {
             "id": id,
             "guardian": studentGuardianID.value
         }
@@ -248,6 +250,7 @@ async function PutRequest() {
         try {
             response = await fetch("http://localhost:8080/groups/", {
                 method: "POST",
+                headers: headersList,
                 body: JSON.stringify({
                     name: groupName.value,
                     members: groupMembers
@@ -263,6 +266,7 @@ async function PutRequest() {
         try {
             response = await fetch("http://localhost:8080/classrooms/", {
                 method: "POST",
+                headers: headersList,
                 body: JSON.stringify({ name: classroomName.value })
             });
         } catch (error) {
@@ -275,6 +279,7 @@ async function PutRequest() {
         try {
             response = await fetch("http://localhost:8080/subjects/", {
                 method: "POST",
+                headers: headersList,
                 body: JSON.stringify({ name: subjectName.value })
             });
         } catch (error) {
@@ -287,6 +292,7 @@ async function PutRequest() {
         try {
             response = await fetch("http://localhost:8080/tags/", {
                 method: "POST",
+                headers: headersList,
                 body: JSON.stringify({ name: tagName.value })
             });
         } catch (error) {
@@ -295,13 +301,7 @@ async function PutRequest() {
     }
     // /// Create new Course
     else if (adminStore.selected === 'course') {
-        let id = "undefined";
-        if (Auth.auth.currentUser) {
-            id = await Auth.auth.currentUser.getIdToken(true);
-        }
-        let headersList = {
-            "id": id
-        }
+        
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/course/", {
