@@ -170,7 +170,7 @@ function UpdateNewMembers(removal, member) {
     <div v-if="adminStore.targetType === 'tag'">
         <input type="text" v-model="newName">
     </div>
-    <button @click="PatchRequest">Save</button>
+    <v-btn @click="PatchRequest">Save</v-btn>
 </template>
 <style scoped>
 input {

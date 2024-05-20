@@ -10,14 +10,14 @@ let addonStudent = ref();
     <div class="itemswrapper">
         <div v-for="member in props.newMembers" class="items">
             <span>{{ member.name }}</span>
-            <button @click="$emit('updatenewmembers', true, member)">Remove</button>
+            <v-btn @click="$emit('updatenewmembers', true, member)">Remove</v-btn>
         </div>
     </div>
     <div class="adder">
         <select v-model="addonStudent">
             <option v-for="student in props.students" :value="student">{{ student.name }}</option>
         </select>
-        <button @click="$emit('updatenewmembers', false, addonStudent)" class="adderbtn">Add</button>
+        <v-btn @click="$emit('updatenewmembers', false, addonStudent)" class="adderbtn">Add</v-btn>
     </div>
 </template>
 <style scoped>

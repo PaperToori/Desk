@@ -167,7 +167,7 @@ async function PutRequest() {
 
     // /// Create new Teacher
     if (adminStore.selected === 'teacher') {
-        
+
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/teachers/", {
@@ -301,7 +301,7 @@ async function PutRequest() {
     }
     // /// Create new Course
     else if (adminStore.selected === 'course') {
-        
+
         // Attempt POST request
         try {
             response = await fetch("http://localhost:8080/course/", {
@@ -353,58 +353,92 @@ function GetGroupMembersInfo() {
     <div v-if="adminStore.selected === 'teacher'">
         <div>
             <h3>Personuppgifter</h3>
-            <input type="text" placeholder="Förnamn Efternamn" v-model="teacherName">
-            <input type="text" placeholder="Personnummer YYYYMMDD-XXXX" v-model="teacherSocialSecurityNumber">
-            <input type="text" placeholder="Email" v-model="teacherEmail">
-            <input type="tel" placeholder="Telefonnummer" v-model="teacherPhoneNumber">
-            <input type="text" placeholder="Adress" v-model="teacherAdress">
-            <input type="text" placeholder="postkod" v-model="teacherZip">
-            <input type="text" placeholder="Stad" v-model="teacherCity">
+            <v-text-field type="text" label="Förnamn Efternamn" v-model="teacherName"></v-text-field>
+            <v-text-field type="text" label="Personnummer YYYYMMDD-XXXX" v-model="teacherSocialSecurityNumber"></v-text-field>
+            <v-text-field type="text" label="Email" v-model="teacherEmail"></v-text-field>
+            <v-text-field type="tel" label="Telefonnummer" v-model="teacherPhoneNumber"></v-text-field>
+            <v-text-field type="text" label="Adress" v-model="teacherAdress"></v-text-field>
+            <v-text-field type="text" label="postkod" v-model="teacherZip"></v-text-field>
+            <v-text-field type="text" label="Stad" v-model="teacherCity"></v-text-field>
             <h3>Administration</h3>
-            <input type="password" placeholder="temporärt lösenord" v-model="teacherTempPassword">
+            <v-text-field v-model="teacherTempPassword" type="password" label="Temporärt lösenord"></v-text-field>
         </div>
     </div>
     <div class="columnautoflow" v-if="adminStore.selected === 'student'">
         <div>
             <div>
                 <h3>Personuppgifter</h3>
-                <input type="text" placeholder="Förnamn Efternamn" v-model="studentName">
-                <input type="text" placeholder="Personnummer YYYYMMDD-XXXX" v-model="studentSocialSecurityNumber">
-                <input type="text" placeholder="Email" v-model="studentEmail">
-                <input type="tel" placeholder="Telefonnummer" v-model="studentPhoneNumber">
-                <input type="text" placeholder="Adress" v-model="studentAdress">
-                <input type="text" placeholder="postkod" v-model="studentZip">
-                <input type="text" placeholder="Stad" v-model="studentCity">
-                <input type="text" placeholder="vårdnashavare" v-model="studentGuardian">
-                <input type="text" placeholder="vårdnashavare personnummer" v-model="studentGuardianID">
+                <v-form>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentName" label="Förnamn Efternamn"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentSocialSecurityNumber" Placeholder="YYYYMMDD-XXXX"
+                                    label="personnummer"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentEmail" label=" Email"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentPhoneNumber" label="Telefonnummer"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentAdress" label="Adress"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentZip" label="postkod"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentCity" label="Stad"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentGuardian" label="vårdnashavare"></v-text-field>
+                            </v-col>
+
+                            <v-col cols="12" md="4">
+                                <v-text-field v-model="studentGuardianID"
+                                    label="vårdnashavare personnummer"></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-form>
                 <h3>Skoluppgifter</h3>
                 <select name="klass" v-model="studentGroup">
                     <option v-for="group in props.groups" :value="group.name">{{ group.name }}</option>
                 </select>
-                <button @click="tagCount++">Add Tag</button>
-                <button @click="DecrimentTagCount">Remove Tag</button>
+                <v-btn @click="tagCount++">Add Tag</v-btn>
+                <v-btn @click="DecrimentTagCount">Remove Tag</v-btn>
                 <h3>Administration</h3>
-                <input type="password" placeholder="temporärt lösenord" v-model="tempPassword">
+                <v-text-field v-model="tempPassword" type="password" label="Temporärt lösenord"></v-text-field>
             </div>
             <!-- If guardian doesnt exist the user should fill out their information -->
             <div v-if="!studentGuardianExists">
                 <h2>Vårdnashavare</h2>
                 <p>vårdnashavaren finns inte än. var god och fyll i deras information</p>
                 <h3>Personuppgifter</h3>
-                <input type="text" placeholder="Förnamn Efternamn" v-model="guardianName">
-                <input type="text" placeholder="Personnummer YYYYMMDD-XXXX" v-model="guardianSocialSecurityNumber">
-                <input type="text" placeholder="Email" v-model="guardianEmail">
-                <input type="tel" placeholder="Telefonnummer" v-model="guardianPhoneNumber">
-                <input type="text" placeholder="Adress" v-model="guardianAdress">
-                <input type="text" placeholder="postkod" v-model="guardianZip">
-                <input type="text" placeholder="Stad" v-model="guardianCity">
-                <input type="text" placeholder="barn" v-model="guardianChild">
-                <input type="text" placeholder="barns personnummer" v-model="guardianChildID">
+                <v-text-field type="text" label="Förnamn Efternamn" v-model="guardianName"></v-text-field>
+                <v-text-field type="text" label="Personnummer YYYYMMDD-XXXX" v-model="guardianSocialSecurityNumber"></v-text-field>
+                <v-text-field type="text" label="Email" v-model="guardianEmail"></v-text-field>
+                <v-text-field type="tel" label="Telefonnummer" v-model="guardianPhoneNumber"></v-text-field>
+                <v-text-field type="text" label="Adress" v-model="guardianAdress"></v-text-field>
+                <v-text-field type="text" label="postkod" v-model="guardianZip"></v-text-field>
+                <v-text-field type="text" label="Stad" v-model="guardianCity"></v-text-field>
+                <v-text-field type="text" label="barn" v-model="guardianChild"></v-text-field>
+                <v-text-field type="text" label="barns personnummer" v-model="guardianChildID"></v-text-field>
                 <h3>Administration</h3>
-                <input type="password" placeholder="temporärt lösenord" v-model="guardianTempPassword">
+                <v-text-field v-model="guardianTempPassword" type="password" label="Temporärt lösenord"></v-text-field>
                 <div id="small">
                     <p>skapa vårdnashavare:</p>
-                    <button id="small-btn" @click="PutRequestGuardian">Create</button>
+                    <v-btn id="small-btn" @click="PutRequestGuardian">Create</v-btn>
                     <span id="small-status-message">{{ responseMessage }}</span>
                 </div>
             </div>
@@ -417,9 +451,9 @@ function GetGroupMembersInfo() {
     </div>
     <div class="columnautoflow" v-if="adminStore.selected === 'group'">
         <div>
-            <input v-model="groupName" type="text" placeholder="Group Name">
-            <button @click="studentCount++">Add Student</button>
-            <button @click="DecrimentStudentCount">Remove Student</button>
+            <v-text-field v-model="groupName" type="text" label="Group Name"></v-text-field>
+            <v-btn @click="studentCount++">Add Student</v-btn>
+            <v-btn @click="DecrimentStudentCount">Remove Student</v-btn>
         </div>
         <div class="bunch-of-stuff">
             <select v-for="n in studentCount" v-model="groupList[n - 1]">
@@ -428,17 +462,17 @@ function GetGroupMembersInfo() {
         </div>
     </div>
     <div v-if="adminStore.selected === 'classroom'">
-        <input v-model="classroomName" type="text" placeholder="Location's Name">
+        <v-text-field v-model="classroomName" type="text" label="Location's Name"></v-text-field>
     </div>
     <div v-if="adminStore.selected === 'subject'">
-        <input v-model="subjectName" type="text" placeholder="Subject's Name">
+        <v-text-field v-model="subjectName" type="text" label="Subject's Name"></v-text-field>
     </div>
     <div v-if="adminStore.selected === 'tag'">
-        <input v-model="tagName" type="text" placeholder="Tag's Name">
+        <v-text-field v-model="tagName" type="text" label="Tag's Name"></v-text-field>
     </div>
     <div class="columnautoflow" v-if="adminStore.selected === 'course'">
         <div>
-            <input v-model="courseName" type="text" placeholder="Kurs namn">
+            <v-text-field v-model="courseName" type="text" label="Kurs namn"></v-text-field>
             <p>
                 Klass: {{ courseGroup }}
                 <select name="klass" v-model="courseGroup">
@@ -447,9 +481,9 @@ function GetGroupMembersInfo() {
             </p>
             <p>
                 Ämne: {{ courseSubject }}
-                <select name="ämne" v-model="courseSubject">
+                <v-select name="ämne" v-model="courseSubject" :items="props.subjects">
                     <option v-for="subject in props.subjects" :value="subject.name">{{ subject.name }}</option>
-                </select>
+                </v-select>
             </p>
             <p>
                 Lärare: {{ courseTeacher }}
@@ -457,11 +491,11 @@ function GetGroupMembersInfo() {
                     <option v-for="teacher in props.teachers" :value="teacher._id">{{ teacher.name }}</option>
                 </select>
             </p>
-            <button id="btn" @click="courseName = `${courseSubject} ${courseGroup}`">generera namn</button>
+            <v-btn id="btn" @click="courseName = `${courseSubject} ${courseGroup}`">generera namn</v-btn>
         </div>
     </div>
     <p>
-        <button id="btn" @click="PutRequest">Create</button>
+        <v-btn id="btn" @click="PutRequest">Create</v-btn>
         <span id="status-message">{{ responseMessage }}</span>
     </p>
 </template>

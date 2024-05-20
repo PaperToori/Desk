@@ -24,7 +24,7 @@ function submitChanges() {
         <div>{{ clAss }}</div>
         <div>{{ classroom }}</div>
         <div>{{ end_time }}</div>
-        <button v-if="isEditing" type="button" @click="submitChanges"> Save changes </button>
+        <v-btn v-if="isEditing" type="button" @click="submitChanges"> Save changes </v-btn>
     </div>
 </template>
 

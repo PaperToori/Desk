@@ -173,7 +173,7 @@ async function loginGooglePopup() {
                             label="telefon nummer"></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" md="4">
+                    <v-col v-if="profile.profileType[profileSelector] === 'Elev'" cols="12" md="4">
                         <v-text-field readonly v-model="profile.profile[profileSelector].group"
                             label="klass"></v-text-field>
                     </v-col>
@@ -188,8 +188,12 @@ async function loginGooglePopup() {
                             label="postkod"></v-text-field>
                     </v-col>
                     <v-col cols="12" md="4">
-                        <v-text-field readonly v-model="profile.profile[profileSelector].guardian"
+                        <v-text-field v-if="profile.profileType[profileSelector] === 'Elev'" readonly v-model="profile.profile[profileSelector].guardian"
                             label="Vårdnashavare"></v-text-field>
+                        <v-text-field v-else-if="profile.profileType[profileSelector] === 'Vårdnashavare'" readonly v-model="profile.profile[profileSelector].child"
+                            label="Barn"></v-text-field>
+                        <v-text-field v-else-if="profile.profileType[profileSelector] === 'Lärare'" readonly v-model="profile.profile[profileSelector].course"
+                            label="Klasser"></v-text-field>
                     </v-col>
                 </v-row>
             </v-container>
@@ -202,7 +206,6 @@ async function loginGooglePopup() {
             <div v-else-if="profile.profileType[profileSelector] === 'Lärare'">
                 <p>Lärare</p>
             </div>
-
         </v-form>
         <v-btn @click="submitForm">Spara ändringar</v-btn>
     </div>
